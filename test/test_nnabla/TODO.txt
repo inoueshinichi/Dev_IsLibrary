@@ -1,0 +1,90 @@
+// nnabla funcのテスト
+
+○　abs
+○　acos
+○　acosh
+○　add_scalar
+add2
+○　affine
+○　arange
+○　asin
+○　asinh
+○　atan
+○　atan2
+○　atanh
+bc_add2
+○　broadcast
+○　ceil
+concatenate
+○　constant
+○　cos
+○　cosh
+○　cumsum
+○　comprod
+○　div2
+equal_scalar
+equal
+○　exp
+○　flip
+○　floor
+greater_equal_scalar
+greater_equal
+greater_scalar
+greater
+isinf
+isnan
+less_equal_scalar
+less_equal
+less_scalar
+less
+○　log
+○　log1p
+○　log2
+○　log10
+logical_and_scalar
+logical_and
+logical_not
+logical_or_scalar
+logical_or
+logical_xor_scalar
+logical_xor
+matrix_diag_part
+matrix_diag
+○　max
+○　maximum_scalar
+○　maximum2
+○　mean
+○　min
+○　minimum_scalar
+○　minimum2
+○　mul_scalar
+○　mul2
+not_equal_scalar
+not_equal
+○　pow_scalar
+○　pow2
+○　prod
+○　r_div_scalar
+○　r_pow_scalar
+○　r_sub_scalar
+○　rand
+○　randint
+○　randn
+○　reshape
+○　round
+○　sigmoid
+○　sign
+○　sin
+○　sinc
+○　sinh
+○　slice
+○　sort
+○　split
+○　sqrt
+stack
+○　sub2
+○　sum
+○　tan
+○　tanh
+○　transpose
+○　where

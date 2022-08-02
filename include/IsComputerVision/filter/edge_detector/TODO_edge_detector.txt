@@ -1,0 +1,10 @@
+edge_detector-folder
+
+/**
+ * @todo
+ * [OK] Sobel
+ * [OK] Laplacian
+ * [] Laplacian Of Gaussian(LOG)
+ * [] DOG
+ * [] Canny
+ */

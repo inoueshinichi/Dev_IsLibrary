@@ -1,0 +1,36 @@
+#include "winver.h"
+
+#define VER_FILEVERSION ${version_major},${version_minor},${version_patch}
+#define VER_FILEVERSION_STR "${version}"
+
+#define VER_PRODUCTVERSION ${version_major},${version_minor},${version_patch}
+#define VER_PRODUCTVERSION_STR "${version}"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VER_FILEVERSION
+PRODUCTVERSION VER_PRODUCTVERSION
+FILEFLAGSMASK 0x3fL
+#if defined(_DEBUG)
+    FILEFLAGS 0x1L
+#else()
+    FILEFLAGS 0x0L
+#endif()
+FILEOS VOS__WINDOWS32
+FILETYPE 0x2L
+FILESUBTYPE 0x0L
+BIGIN
+    BLOCK "StringFileInfo"
+    BIGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Private Person. Not .Inc"
+            VALUE "FileDescription", "is library"
+            VALUE "FileVersion", VER_FILEVERSION_STR
+            VALUE "LegalCopyright", "@2020 Shinichi Inoue"
+            VALUE "InternalName", "islib"
+            VALUE "OriginalFilename", "islib"
+            VALUE "ProductName", "is library @ c++"
+            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
+        END
+    END
+END

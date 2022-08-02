@@ -1,0 +1,23 @@
+# Directory
+/.vscode
+/build
+/data
+/third-party/eigen-3.3.7
+/third-party/opencv_contrib-4.5.3
+/third-party/eigen-3.3.7.zip
+/third-party/opencv_contrib-4.5.3.zip
+# /third-party/
+# /third-party/
+# /third-party/
+
+
+# File
+*.bmp
+*.jpg
+*.jpeg
+*.jpeg2000
+*.png
+*.tiff
+*.gif
+*.pgm
+*.csv
