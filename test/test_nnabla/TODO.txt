@@ -4,7 +4,7 @@
 ○　acos
 ○　acosh
 ○　add_scalar
-add2
+○  add2
 ○　affine
 ○　arange
 ○　asin
@@ -12,10 +12,10 @@ add2
 ○　atan
 ○　atan2
 ○　atanh
-bc_add2
+○  bc_add2
 ○　broadcast
 ○　ceil
-concatenate
+○  concatenate
 ○　constant
 ○　cos
 ○　cosh
