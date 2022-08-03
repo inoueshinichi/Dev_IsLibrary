@@ -54,12 +54,12 @@
 /*OK*/#include <IsNdArray/function/logical_or_scalar.hpp>
 /*OK*/#include <IsNdArray/function/logical_xor_scalar.hpp>
 
-/**/#include <IsNdArray/function/equal_scalar.hpp>
-/**/#include <IsNdArray/function/not_equal_scalar.hpp>
-/**/#include <IsNdArray/function/greater_scalar.hpp>
-/**/#include <IsNdArray/function/greater_equal_scalar.hpp>
-/**/#include <IsNdArray/function/less_scalar.hpp>
-/**/#include <IsNdArray/function/less_equal_scalar.hpp>
+/*OK*/#include <IsNdArray/function/equal_scalar.hpp>
+/*OK*/#include <IsNdArray/function/not_equal_scalar.hpp>
+/*OK*/#include <IsNdArray/function/greater_scalar.hpp>
+/*OK*/#include <IsNdArray/function/greater_equal_scalar.hpp>
+/*OK*/#include <IsNdArray/function/less_scalar.hpp>
+/*OK*/#include <IsNdArray/function/less_equal_scalar.hpp>
 
 
 
@@ -98,21 +98,21 @@
 /*OK*/#include <IsNdArray/function/logical_and.hpp>
 /*OK*/#include <IsNdArray/function/logical_or.hpp>
 /*OK*/#include <IsNdArray/function/logical_xor.hpp>
-/**/#include <IsNdArray/function/equal.hpp>
-/**/#include <IsNdArray/function/not_equal.hpp>
-/**/#include <IsNdArray/function/greater.hpp>
-/**/#include <IsNdArray/function/greater_equal.hpp>
-/**/#include <IsNdArray/function/less.hpp>
-/**/#include <IsNdArray/function/less_equal.hpp>
-
-
-
+/*OK*/#include <IsNdArray/function/equal.hpp>
+/*OK*/#include <IsNdArray/function/not_equal.hpp>
+/*OK*/#include <IsNdArray/function/greater.hpp>
+/*OK*/#include <IsNdArray/function/greater_equal.hpp>
+/*OK*/#include <IsNdArray/function/less.hpp>
+/*OK*/#include <IsNdArray/function/less_equal.hpp>
 
 
 // 3-Input
 /*OK*/#include <IsNdArray/function/where.hpp>
 
 // Other
+/**/#include <IsNdArray/function/matrix_diag.hpp>
+/**/#include <IsNdArray/function/matrix_diag_part.hpp>
+
 /**/#include <IsNdArray/function/affine.hpp>
 /**/#include <IsNdArray/function/softmax.hpp>
 
@@ -1300,6 +1300,32 @@ namespace is
         }
 
         // Other -------------------------------------------------------
+
+        // matrix_diag
+        template <typename T>
+        NdArrayPtr matrix_diag(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            MatrixDiag<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // matrix_diag_part
+        template <typename T>
+        NdArrayPtr matrix_diag_part(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            MatrixDiagPart<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
 
     }
 }

@@ -51,7 +51,8 @@ make_test_case(test_nnabla_func_less_equal.cpp TEST_NNABLA_FUNC_LESS_EQUAL)
 make_test_case(test_nnabla_func_where.cpp TEST_NNABLA_FUNC_WHERE)
 
 # other
-
+make_test_case(test_nnabla_func_matrix_diag.cpp TEST_NNABLA_FUNC_MATRIX_DIAG)
+make_test_case(test_nnabla_func_matrix_diag_part.cpp TEST_NNABLA_FUNC_MATRIX_DIAG_PART)
 
 # point-wise scalar
 make_test_case(test_nnabla_func_add_scalar.cpp TEST_NNABLA_FUNC_ADD_SCALAR)

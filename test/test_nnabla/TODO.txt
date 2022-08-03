@@ -48,8 +48,8 @@ affine
 ○　logical_or
 ○　logical_xor_scalar
 ○　logical_xor
-matrix_diag_part
-matrix_diag
+○  matrix_diag_part
+○  matrix_diag
 ○　max
 ○　maximum_scalar
 ○　maximum2
