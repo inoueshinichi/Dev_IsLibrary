@@ -41,6 +41,8 @@ function(make_test_case SOURCE_CODE TEST_TARGET_EXE)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMMON_TARGET_NAME}> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_NDARRAY_TARGET_NAME}> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMPUTERVISION_TARGET_NAME}> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:GTest::gtest> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:GTest::gmock> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
     )
 
     # ###############################################################################
