@@ -23,7 +23,7 @@ namespace is
 
             auto axis = static_cast<Shape_t::size_type>(this->axis_);
 
-            NBLA_CHECK(axis <= shape.size(), 
+            NBLA_CHECK(axis < shape.size(), // axis <= shape.size() -> axis < shape.size() に変更. '22.8.3
                        error_code::value,
                        "axis must be less than or equal to ndim of input. "
                        "axis: %d > ndim of input: %d.",
