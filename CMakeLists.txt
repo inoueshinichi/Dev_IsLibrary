@@ -141,8 +141,8 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
             find_package(OpenMP REQUIRED)
             include_directories(${OpenMP_INCLUDE_DIRS})
             link_directories(${OpenMP_LIB_DIRS})
-            add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
-            add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
+            add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
+            add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
         endif()
 
         # C++標準に準拠しない拡張機能を無効化
@@ -169,8 +169,8 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
             find_package(OpenMP REQUIRED)
             include_directories(${OpenMP_INCLUDE_DIRS})
             link_directories(${OpenMP_LIB_DIRS})
-            add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
-            add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
+            add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
+            add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
         endif()
 
         # C++標準に準拠しない拡張機能を無効化
