@@ -156,7 +156,7 @@ namespace is
             if (this->with_index_ || this->only_index_) 
             {
                 auto out_sp_arr = this->only_index_ ? outputs[0] : outputs[1];
-                auto out_ptr = out_sp_arr->cast_data_and_get_pointer<size_t>(ctx_, true);
+                auto out_ptr = out_sp_arr-> template cast_data_and_get_pointer<size_t>(ctx_, true);
                 std::copy_n(sort_index_ptr, out_sp_arr->size(), out_ptr);
             }
         }
