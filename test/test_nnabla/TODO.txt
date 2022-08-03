@@ -5,7 +5,7 @@
 ○　acosh
 ○　add_scalar
 ○  add2
-○　affine
+affine
 ○　arange
 ○　asin
 ○　asinh
@@ -22,32 +22,32 @@
 ○　cumsum
 ○　comprod
 ○　div2
-equal_scalar
-equal
+○　equal_scalar
+○　equal
 ○　exp
 ○　flip
 ○　floor
-greater_equal_scalar
-greater_equal
-greater_scalar
-greater
-isinf
-isnan
-less_equal_scalar
-less_equal
-less_scalar
-less
+○　greater_equal_scalar
+○　greater_equal
+○　greater_scalar
+○　greater
+○　isinf
+○　isnan
+○　less_equal_scalar
+○　less_equal
+○　less_scalar
+○　less
 ○　log
 ○　log1p
 ○　log2
 ○　log10
-logical_and_scalar
-logical_and
-logical_not
-logical_or_scalar
-logical_or
-logical_xor_scalar
-logical_xor
+○　logical_and_scalar
+○　logical_and
+○　logical_not
+○　logical_or_scalar
+○　logical_or
+○　logical_xor_scalar
+○　logical_xor
 matrix_diag_part
 matrix_diag
 ○　max
@@ -59,8 +59,8 @@ matrix_diag
 ○　minimum2
 ○　mul_scalar
 ○　mul2
-not_equal_scalar
-not_equal
+○　not_equal_scalar
+○　not_equal
 ○　pow_scalar
 ○　pow2
 ○　prod
@@ -78,13 +78,14 @@ not_equal
 ○　sinc
 ○　sinh
 ○　slice
+softmax
 ○　sort
 ○　split
 ○　sqrt
-stack
+○  stack
 ○　sub2
 ○　sum
 ○　tan
 ○　tanh
 ○　transpose
-○　where
+○  where

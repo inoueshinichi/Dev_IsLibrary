@@ -38,6 +38,8 @@
 /*OK*/#include <IsNdArray/function/sigmoid.hpp>
 /*OK*/#include <IsNdArray/function/sign.hpp>
 
+/*OK*/#include <IsNdArray/function/logical_not.hpp>
+
 // Pointwise-2
 /*OK*/#include <IsNdArray/function/add_scalar.hpp>
 /*OK*/#include <IsNdArray/function/pow_scalar.hpp>
@@ -47,6 +49,24 @@
 /*OK*/#include <IsNdArray/function/r_sub_scalar.hpp>
 /*OK*/#include <IsNdArray/function/maximum_scalar.hpp>
 /*OK*/#include <IsNdArray/function/minimum_scalar.hpp>
+
+/*OK*/#include <IsNdArray/function/logical_and_scalar.hpp>
+/*OK*/#include <IsNdArray/function/logical_or_scalar.hpp>
+/*OK*/#include <IsNdArray/function/logical_xor_scalar.hpp>
+
+/**/#include <IsNdArray/function/equal_scalar.hpp>
+/**/#include <IsNdArray/function/not_equal_scalar.hpp>
+/**/#include <IsNdArray/function/greater_scalar.hpp>
+/**/#include <IsNdArray/function/greater_equal_scalar.hpp>
+/**/#include <IsNdArray/function/less_scalar.hpp>
+/**/#include <IsNdArray/function/less_equal_scalar.hpp>
+
+
+
+
+// Pointwise-3
+/*OK*/#include <IsNdArray/function/isinf.hpp>
+/*OK*/#include <IsNdArray/function/isnan.hpp>
 
 // Reduce
 /*OK*/#include <IsNdArray/function/sum.hpp>
@@ -61,7 +81,8 @@
 /*OK*/#include <IsNdArray/function/reshape.hpp>
 /*OK*/#include <IsNdArray/function/slice.hpp>
 /*OK*/#include <IsNdArray/function/split.hpp>
-/*--*/#include <IsNdArray/function/concatenate.hpp>
+/*OK*/#include <IsNdArray/function/concatenate.hpp>
+/*OK*/#include <IsNdArray/function/stack.hpp>
 
 // Ope2
 /*OK*/#include <IsNdArray/function/sort.hpp>
@@ -69,18 +90,33 @@
 /*OK*/#include <IsNdArray/function/cumprod.hpp>
 
 // 2-Input
-/*KO*/#include <IsNdArray/function/add2.hpp>
-/*--*/#include <IsNdArray/function/sub2.hpp>
-/*--*/#include <IsNdArray/function/mul2.hpp>
-/*--*/#include <IsNdArray/function/div2.hpp>
+/*OK*/#include <IsNdArray/function/add2.hpp>
+/*OK*/#include <IsNdArray/function/sub2.hpp>
+/*OK*/#include <IsNdArray/function/div2.hpp>
+/*OK*/#include <IsNdArray/function/mul2.hpp>
+/*OK*/#include <IsNdArray/function/logical_not.hpp>
+/*OK*/#include <IsNdArray/function/logical_and.hpp>
+/*OK*/#include <IsNdArray/function/logical_or.hpp>
+/*OK*/#include <IsNdArray/function/logical_xor.hpp>
+/**/#include <IsNdArray/function/equal.hpp>
+/**/#include <IsNdArray/function/not_equal.hpp>
+/**/#include <IsNdArray/function/greater.hpp>
+/**/#include <IsNdArray/function/greater_equal.hpp>
+/**/#include <IsNdArray/function/less.hpp>
+/**/#include <IsNdArray/function/less_equal.hpp>
+
+
+
+
 
 // 3-Input
-/*--*/#include <IsNdArray/function/where.hpp>
+/*OK*/#include <IsNdArray/function/where.hpp>
 
 // Other
 /**/#include <IsNdArray/function/affine.hpp>
 /**/#include <IsNdArray/function/softmax.hpp>
-/**/#include <IsNdArray/function/stack.hpp>
+
+
 
 
 
@@ -192,7 +228,7 @@ namespace is
         NdArrayPtr constant(const Shape_t& shape, float val)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Arange<T> operation(ctx, val, shape);
+            Constant<T> operation(ctx, val, shape);
             auto output = NdArray::create();
             output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({}, {output});
@@ -527,12 +563,25 @@ namespace is
             return output;
         }
 
+        // logical_not
+        template <typename T>
+        NdArrayPtr logical_not(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalNot<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
 
         // PointWise-2 -------------------------------------------------------
 
         // add_scalar
         template <typename T>
-        NdArrayPtr add_scalar(NdArrayPtr input, double val, bool inplace = false)
+        NdArrayPtr add_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             AddScalar<T> operation(ctx, val, inplace);
@@ -552,7 +601,7 @@ namespace is
 
         // pow_scalar
         template <typename T>
-        NdArrayPtr pow_scalar(NdArrayPtr input, double val, bool inplace = false)
+        NdArrayPtr pow_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             PowScalar<T> operation(ctx, val, inplace);
@@ -572,7 +621,7 @@ namespace is
 
         // mul_scalar
         template <typename T>
-        NdArrayPtr mul_scalar(NdArrayPtr input, double val, bool inplace = false)
+        NdArrayPtr mul_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             MulScalar<T> operation(ctx, val, inplace);
@@ -583,7 +632,7 @@ namespace is
             }
             else {
                 auto output = NdArray::create();
-                output->cast_data_and_get_pointer<T>(ctx);
+                output->cast_data_and_get_pointer<T>(ctx);    
                 operation.setup({input}, {output});
                 operation.execute({input}, {output});
                 return output;
@@ -592,7 +641,7 @@ namespace is
 
         // r_div_scalar
         template <typename T>
-        NdArrayPtr r_div_scalar(NdArrayPtr input, double val, bool inplace = false)
+        NdArrayPtr r_div_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             RDivScalar<T> operation(ctx, val, inplace);
@@ -612,7 +661,7 @@ namespace is
 
         // r_pow_scalar
         template <typename T>
-        NdArrayPtr r_pow_scalar(NdArrayPtr input, double val, bool inplace = false)
+        NdArrayPtr r_pow_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             RPowScalar<T> operation(ctx, val, inplace);
@@ -632,7 +681,7 @@ namespace is
 
         // r_sub_scalar
         template <typename T>
-        NdArrayPtr r_sub_scalar(NdArrayPtr input, double val, bool inplace = false)
+        NdArrayPtr r_sub_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             RSubScalar<T> operation(ctx, val, inplace);
@@ -669,6 +718,152 @@ namespace is
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             MinimumScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // logical_and_scalar
+        template <typename T>
+        NdArrayPtr logical_and_scalar(NdArrayPtr input, bool val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalAndScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // logical_or_scalar
+        template <typename T>
+        NdArrayPtr logical_or_scalar(NdArrayPtr input, bool val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalOrScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // logical_xor_scalar
+        template <typename T>
+        NdArrayPtr logical_xor_scalar(NdArrayPtr input, bool val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalXorScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // equal_scalar
+        template <typename T>
+        NdArrayPtr equal_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            EqualScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // not_equal_scalar
+        template <typename T>
+        NdArrayPtr not_equal_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            NotEqualScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // greater_scalar
+        template <typename T>
+        NdArrayPtr greater_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            GreaterScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // greater_equal_scalar
+        template <typename T>
+        NdArrayPtr greater_equal_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            GreaterEqualScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // less_scalar
+        template <typename T>
+        NdArrayPtr less_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LessScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // less_scalar
+        template <typename T>
+        NdArrayPtr less_equal_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LessEqualScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+
+        // Pointwise-3 -------------------------------------------------------
+
+        // isinf
+        template <typename T>
+        NdArrayPtr isinf(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            IsInf<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // isnan
+        template <typename T>
+        NdArrayPtr isnan(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            IsNan<T> operation(ctx);
             auto output = NdArray::create();
             output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({input}, {output});
@@ -837,13 +1032,25 @@ namespace is
             return outputs;
         }
 
-
         // concatenate
         template <typename T>
         NdArrayPtr concatenate(vector<NdArrayPtr> inputs, int axis)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             Concatenate<T> operation(ctx, axis);
+            auto output = NdArray::create();
+            operation.setup(inputs, {output});
+            operation.execute(inputs, {output});
+            return output;
+        }
+
+        // stack
+        template <typename T>
+        NdArrayPtr stack(vector<NdArrayPtr> inputs, int axis)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Stack<T> operation(ctx, axis);
+
             auto output = NdArray::create();
             operation.setup(inputs, {output});
             operation.execute(inputs, {output});
@@ -959,6 +1166,140 @@ namespace is
             return output;
         }
 
+        // logical_and
+        template <typename T>
+        NdArrayPtr logical_and(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalAnd<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // logical_or
+        template <typename T>
+        NdArrayPtr logical_or(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalOr<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // logical_xor
+        template <typename T>
+        NdArrayPtr logical_xor(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogicalXor<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // equal
+        template <typename T>
+        NdArrayPtr equal(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Equal<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // not_equal
+        template <typename T>
+        NdArrayPtr not_equal(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            NotEqual<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // greater
+        template <typename T>
+        NdArrayPtr greater(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Greater<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // greater_equal
+        template <typename T>
+        NdArrayPtr greater_equal(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            GreaterEqual<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // less
+        template <typename T>
+        NdArrayPtr less(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Less<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+        // less_equal
+        template <typename T>
+        NdArrayPtr less_equal(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LessEqual<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+
+        // 3-Input -------------------------------------------------------
+
+        // where
+        template <typename T>
+        NdArrayPtr where(NdArrayPtr condition_array, NdArrayPtr true_array, NdArrayPtr false_array)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Where<T> operation(ctx);
+
+            auto output = NdArray::create();
+            operation.setup({condition_array, true_array, false_array}, {output});
+            operation.execute({condition_array, true_array, false_array}, {output});
+            return output;
+        }
+
+        // Other -------------------------------------------------------
 
     }
 }

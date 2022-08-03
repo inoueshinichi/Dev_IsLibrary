@@ -14,6 +14,8 @@ make_test_case(test_nnabla_func_slice.cpp TEST_NNABLA_FUNC_SLICE)
 make_test_case(test_nnabla_func_arange.cpp TEST_NNABLA_FUNC_ARANGE)
 make_test_case(test_nnabla_func_broadcast.cpp TEST_NNABLA_FUNC_BROADCAST)
 make_test_case(test_nnabla_func_split.cpp TEST_NNABLA_FUNC_SPLIT)
+make_test_case(test_nnabla_func_concatenate.cpp TEST_NNABLA_FUNC_CONCATENATE)
+make_test_case(test_nnabla_func_stack.cpp TEST_NNABLA_FUNC_STACK)
 
 # reduce
 make_test_case(test_nnabla_func_sum.cpp TEST_NNABLA_FUNC_SUM)
@@ -27,10 +29,29 @@ make_test_case(test_nnabla_func_sort.cpp TEST_NNABLA_FUNC_SORT)
 make_test_case(test_nnabla_func_cumsum.cpp TEST_NNABLA_FUNC_CUMSUM)
 make_test_case(test_nnabla_func_cumprod.cpp TEST_NNABLA_FUNC_CUMPROD)
 
+
 # 2-input
 make_test_case(test_nnabla_func_add2.cpp TEST_NNABLA_FUNC_ADD2)
 make_test_case(test_nnabla_func_sub2.cpp TEST_NNABLA_FUNC_SUB2)
 make_test_case(test_nnabla_func_mul2.cpp TEST_NNABLA_FUNC_MUL2)
+make_test_case(test_nnabla_func_div2.cpp TEST_NNABLA_FUNC_DIV2)
+make_test_case(test_nnabla_func_logical_and.cpp TEST_NNABLA_FUNC_LOGICAL_AND)
+make_test_case(test_nnabla_func_logical_or.cpp TEST_NNABLA_FUNC_LOGICAL_OR)
+make_test_case(test_nnabla_func_logical_xor.cpp TEST_NNABLA_FUNC_LOGICAL_XOR)
+make_test_case(test_nnabla_func_equal.cpp TEST_NNABLA_FUNC_EQUAL)
+make_test_case(test_nnabla_func_not_equal.cpp TEST_NNABLA_FUNC_NOT_EQUAL)
+make_test_case(test_nnabla_func_greater.cpp TEST_NNABLA_FUNC_GREATER)
+make_test_case(test_nnabla_func_greater_equal.cpp TEST_NNABLA_FUNC_GREATER_EQUAL)
+make_test_case(test_nnabla_func_less.cpp TEST_NNABLA_FUNC_LESS)
+make_test_case(test_nnabla_func_less_equal.cpp TEST_NNABLA_FUNC_LESS_EQUAL)
+
+
+
+# 3-input
+make_test_case(test_nnabla_func_where.cpp TEST_NNABLA_FUNC_WHERE)
+
+# other
+
 
 # point-wise scalar
 make_test_case(test_nnabla_func_add_scalar.cpp TEST_NNABLA_FUNC_ADD_SCALAR)
@@ -39,6 +60,18 @@ make_test_case(test_nnabla_func_mul_scalar.cpp TEST_NNABLA_FUNC_MUL_SCALAR)
 make_test_case(test_nnabla_func_r_div_scalar.cpp TEST_NNABLA_FUNC_R_DIV_SCALAR)
 make_test_case(test_nnabla_func_r_pow_scalar.cpp TEST_NNABLA_FUNC_R_POW_SCALAR)
 make_test_case(test_nnabla_func_r_sub_scalar.cpp TEST_NNABLA_FUNC_R_SUB_SCALAR)
+make_test_case(test_nnabla_func_logical_and_scalar.cpp TEST_NNABLA_FUNC_LOGICAL_AND_SCALAR)
+make_test_case(test_nnabla_func_logical_or_scalar.cpp TEST_NNABLA_FUNC_LOGICAL_OR_SCALAR)
+make_test_case(test_nnabla_func_logical_xor_scalar.cpp TEST_NNABLA_FUNC_LOGICAL_XOR_SCALAR)
+make_test_case(test_nnabla_func_equal_scalar.cpp TEST_NNABLA_FUNC_EQUAL_SCALAR)
+make_test_case(test_nnabla_func_not_equal_scalar.cpp TEST_NNABLA_FUNC_NOT_EQUAL_SCALAR)
+make_test_case(test_nnabla_func_greater_scalar.cpp TEST_NNABLA_FUNC_GREATER_SCALAR)
+make_test_case(test_nnabla_func_greater_equal_scalar.cpp TEST_NNABLA_FUNC_GREATER_EQUAL_SCALAR)
+make_test_case(test_nnabla_func_less_scalar.cpp TEST_NNABLA_FUNC_LESS_SCALAR)
+make_test_case(test_nnabla_func_less_equal_scalar.cpp TEST_NNABLA_FUNC_LESS_EQUAL_SCALAR)
+
+
+
 
 # point-wise
 make_test_case(test_nnabla_func_abs.cpp TEST_NNABLA_FUNC_ABS)
@@ -67,6 +100,10 @@ make_test_case(test_nnabla_func_sqrt.cpp TEST_NNABLA_FUNC_SQRT)
 make_test_case(test_nnabla_func_ceil.cpp TEST_NNABLA_FUNC_CEIL)
 make_test_case(test_nnabla_func_floor.cpp TEST_NNABLA_FUNC_FLOOR)
 make_test_case(test_nnabla_func_round.cpp TEST_NNABLA_FUNC_ROUND)
+make_test_case(test_nnabla_func_logical_not.cpp TEST_NNABLA_FUNC_LOGICAL_NOT)
 
+# point-wise check
+make_test_case(test_nnabla_func_isinf.cpp TEST_NNABLA_FUNC_ISINF)
+make_test_case(test_nnabla_func_isnan.cpp TEST_NNABLA_FUNC_ISNAN)
 
 

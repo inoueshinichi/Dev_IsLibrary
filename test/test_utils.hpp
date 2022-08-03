@@ -170,8 +170,49 @@ void show_ndarray_contents(NdArrayPtr ndarray)
         }
         std::cout << "]" << std::endl;
     }
+    else if (ndim == 4)
+    {
+        std::cout << "[";
+        for (int n = 0; n < shape[0]; ++n)
+        {
+            if (n != 0)
+                std::cout << std::endl;
+            std::cout << "[";
+            for (int c = 0; c < shape[1]; ++c)
+            {
+                if (c != 0)
+                    std::cout << " ";
+                std::cout << "[";
+                for (int j = 0; j < shape[2]; ++j)
+                {
+                    if (j != 0)
+                        std::cout << "  ";
+                    std::cout << "[";
+                    for (int i = 0; i < shape[3]; ++i)
+                    {
+                        std::cout << (T)data[n * strides[0] + c * strides[1] + j * strides[2] + i * strides[3]];
+                        if (i != shape[3] - 1)
+                            std::cout << " ";
+                    }
+
+                    if (j == shape[2] - 1)
+                    {
+                        if (c != shape[1] - 1)
+                            std::cout << "]]" << std::endl;
+                        else
+                            std::cout << "]]";
+                    }
+                    else
+                        std::cout << "]" << std::endl;
+                }
+            }
+            std::cout << "]";
+        }
+        std::cout << "]" << std::endl;
+    }
     else
     {
-        throw std::runtime_error("Not implimentation.");
+        std::string err_status = format_string("Not implimentation. func: %s, line: %d, file: %s", __func__, __LINE__, __FILE__);
+        throw std::runtime_error(err_status);
     }
 }
