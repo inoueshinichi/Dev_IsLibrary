@@ -15,6 +15,21 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
     message(STATUS "GoogleTest shared_lib: ${GTEST_SHARED_LIB}")
     message(STATUS "GoogleTest build always: ${GTEST_BUILD_ALWAYS}")
 
+    # GoogleTestのコンパイルにはGCCが必要になるので, macOSにおけるパスを指定する.
+    set(MACOS_GCC_COMPILER_OPTION "")
+    set(MACOS_GCC_C_PATH "/usr/local/bin/gcc-11")
+    set(MACOS_GCC_CXX_PATH "/usr/local/bin/g++-11")
+    set(MACOS_GCC_C_COMPILER "")
+    set(MACOS_GCC_CXX_COMPILER "")
+    if(APPLE)
+        if (NOT EXISTS ${MACOS_GCC_C_PATH} OR NOT EXISTS ${MACOS_GCC_CXX_PATH})
+            message(FATAL_ERROR "Failed to find GCC compiler. Please install GCC compiler on macOS.")
+        endif()
+        message(STATUS "Found GCC compiler on macOS.")
+        set(MACOS_GCC_C_COMPILER "-DCMAKE_C_COMPILER=${MACOS_GCC_C_PATH}")
+        set(MACOS_GCC_CXX_COMPILER "-DCMAKE_CXX_COMPILER=${MACOS_GCC_CXX_PATH}")
+    endif()
+
     # Enable ExternalProject
     include(ExternalProject)
     ExternalProject_Add(
@@ -71,6 +86,8 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL} 
                    -DBUILD_SHARED_LIBS=${GTEST_SHARED_LIB} 
                    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} # CMakeのビルドタイプに合わせる
+                   ${MACOS_GCC_C_COMPILER} # Mac OS用 GCCコンパイラへのパス
+                   ${MACOS_GCC_CXX_COMPILER}
 
 
         #################### No.4 Build Step ####################
@@ -131,6 +148,7 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
 
     if (NOT EXISTS ${INSTALL_DIR}/include)
         message(STATUS "Return googletest.cmake because not make install/include yet.")
+        message(STATUS "Please build googletest before test targets.")
         return()
     endif()
 
