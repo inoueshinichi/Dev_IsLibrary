@@ -54,6 +54,7 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     set(CMAKE_DEBUG_POSTFIX d)
     set(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
     set(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
+
     
 
     # プラットフォーム毎のコンパイラオプション(マルチ・コンフィギュレーションに対応)
