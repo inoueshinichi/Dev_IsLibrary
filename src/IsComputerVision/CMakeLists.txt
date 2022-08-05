@@ -90,6 +90,19 @@ add_dependencies(${LIB_TARGET_NAME}
 ###############################################################################
 # OpenCVライブラリのリンク
 ###############################################################################
+set(OpenCV_DIR "")
+if(MSVC)
+    # 環境変数からOpenCVのビルドパスを探す
+    if($ENV{OpenCV_DIR} STREQUAL "")
+        message(FATAL_ERROR "Not found OpenCV_DIR env path.")
+    else()
+        set(OpenCV_DIR $ENV{OpenCV_DIR})
+        string(REPLACE "\\" "/" OpenCV_DIR $ENV{OpenCv_DIR})
+        message(STATUS "OpenCV_DIR: ${OpenCV_DIR}")
+    endif()
+    
+endif()
+
 find_package(OpenCV REQUIRED)
 if(OpenCV_FOUND)
     target_include_directories(${LIB_TARGET_NAME} PUBLIC 
