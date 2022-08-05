@@ -6,7 +6,7 @@
 #endif
 
 #if defined(_MSC_VER) && !defined(__CUDACC__)
-    #if defined(imgproc_EXPORTS) || defined(imgproc_dbg_EXPORTS)
+    #if defined(IsComputerVision_EXPORTS) || defined(IsComputerVision_dbg_EXPORTS)
         #define IS_CV_API __declspec(dllexport)
     #else
         #define IS_CV_API __declspec(dllimport)
