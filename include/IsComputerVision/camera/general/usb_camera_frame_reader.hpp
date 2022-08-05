@@ -6,7 +6,14 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/videoio.hpp>
 
-
+/* OpenCV Lib Config for Windows */
+#ifdef WIN32
+    #ifdef _DEBUG
+        #pragma comment(lib,"opencv_world460d.lib")
+    #else
+        #pragma comment(lib, "opencv_world460.lib")
+    #endif
+#endif
 
 namespace is 
 {
