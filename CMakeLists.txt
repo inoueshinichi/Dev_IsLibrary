@@ -24,30 +24,14 @@ message(STATUS ">>>>> ${PROJECT_NAME}")
 
 
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-    ###############################################################################
-    # 前処理
-    ###############################################################################
-    message(STATUS "========== [START] Preprocessing ==========")
-
-    # pythonコマンドをCMakeで使えるようにする
-    set(PYTHON_COMMAND_NAME "python") # どのインタープリタが選ばれるかはPCの設定次第. もっと詳細設定をコマンドライン引数から与えても良いと思う.
-    find_program(PYTHON_INTERPRETER ${PYTHON_COMMAND_NAME})
-    if(NOT EXISTS ${PYTHON_INTERPRETER})
-        message(FATAL_ERROR "Python [${PYTHON_INTERPRETER}] not found.")
-        error() # Place Unknown command to stop cmake process here.
-    endif()
-    set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
-    message(STATUS "Python3 Interpreter: ${PYTHON_INTERPRETER}")
-
-    message(STATUS "========== [END] Preprocessing ==========")
-
-
+ 
     ###############################################################################
     # 全ターゲットに影響を与えるオプション
     ###############################################################################
     message(STATUS "========== [START] C++ All Target Options ==========")
 
     # Switching Option
+    option(BUILD_PYTHON_INTERPRETER "Enable/Disable: Python interpreter" OFF)
     option(BUILD_CPP_OPENMP "Enable/Disable: OpenMP" OFF)
     option(BUILD_CPP_TEST "Enable/Disable: Building Test" ON)
     option(BUILD_CPP_SHARED_LIBS "Enable/Disable: Shared Libraries" ON)
@@ -152,7 +136,7 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
         string(APPEND CMAKE_CXX_FLAGS " -Wall")
 
     else()
-        message(STATUS "Compiler: GCC in Linux")
+        message(STATUS "Compiler: GNU in Linux")
 
         # 詳細情報の表示
         set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -220,10 +204,29 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     message(STATUS "========== [END] C++ All Target Options ==========")
 
 endif()
-  
-    
 
-    
+###############################################################################
+# 前処理
+###############################################################################
+message(STATUS "========== [START] Preprocessing ==========")
+
+if(BUILD_PYTHON_INTERPRETER)
+
+    # pythonコマンドをCMakeで使えるようにする
+    set(PYTHON_COMMAND_NAME "python") # どのインタープリタが選ばれるかはPCの設定次第. もっと詳細設定をコマンドライン引数から与えても良いと思う.
+    find_program(PYTHON_INTERPRETER ${PYTHON_COMMAND_NAME})
+    if(NOT EXISTS ${PYTHON_INTERPRETER})
+        message(FATAL_ERROR "Python [${PYTHON_INTERPRETER}] not found.")
+        error() # Place Unknown command to stop cmake process here.
+    endif()
+    set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
+    message(STATUS "Python3 Interpreter: ${PYTHON_INTERPRETER}")
+
+endif()
+
+message(STATUS "========== [END] Preprocessing ==========")
+  
+        
 ###############################################################################
 # C++ core
 ###############################################################################
