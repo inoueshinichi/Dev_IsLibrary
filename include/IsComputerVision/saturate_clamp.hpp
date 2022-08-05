@@ -539,9 +539,15 @@ namespace is
         // longlong -> longlong
         template <>
         inline longlong saturate_clamp<longlong>(longlong v) { return v; }
+    #ifdef WIN32
+        // ulonglong -> longlong
+        template <>
+        inline longlong saturate_clamp<longlong>(ulonglong v) { return (longlong)((std::min)(v, (ulonglong)LLONG_MAX)); }
+    #else
         // ulonglong -> longlong
         template <>
         inline longlong saturate_clamp<longlong>(ulonglong v) { return (longlong)((std::min)(v, (ulonglong)LONG_LONG_MAX)); }
+    #endif
         // float -> longlong
         template <>
         inline longlong saturate_clamp<longlong>(float v) { return (longlong)(std::roundf(v)); }
