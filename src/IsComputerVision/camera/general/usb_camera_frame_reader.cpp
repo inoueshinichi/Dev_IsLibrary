@@ -1,6 +1,18 @@
+
+/* OpenCV Lib Config for Windows */
+#ifdef WIN32
+    #ifdef _DEBUG
+        #pragma comment(lib,"lib\\opencv_world460d.lib")
+    #else
+        #pragma comment(lib, "lib\\opencv_world460.lib")
+    #endif
+#endif
+
 #include <IsComputerVision/camera/general/usb_camera_frame_reader.hpp>
 
 #include <IsCommon/IsCommon.hpp>
+
+
 
 namespace is 
 {
