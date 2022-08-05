@@ -2,9 +2,9 @@
 /.vscode
 /build
 /data
-/third-party/eigen-3.3.7
+/third-party/eigen-3.4.0
 /third-party/opencv_contrib-4.5.3
-/third-party/eigen-3.3.7.zip
+/third-party/eigen-3.4.0.zip
 /third-party/opencv_contrib-4.5.3.zip
 # /third-party/
 # /third-party/

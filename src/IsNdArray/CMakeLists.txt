@@ -55,7 +55,7 @@ target_compile_definitions(${LIB_TARGET_NAME} PUBLIC
 # include
 target_include_directories(${LIB_TARGET_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../third-party/eigen-3.3.7
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../third-party/eigen-3.4.0
 )
 
 

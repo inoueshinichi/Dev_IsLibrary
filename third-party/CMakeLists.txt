@@ -5,12 +5,12 @@ cmake_minimum_required(VERSION 3.14.6)
 ###############################################################################
 include(${CMAKE_CURRENT_SOURCE_DIR}/../build-tool/cmake/download_and_extract.cmake)
 
-# eigen-3.3.7 ------------------------------------------------------------------------
+# eigen-3.4.0 ------------------------------------------------------------------------
 # https://eigen.tuxfamily.org/index.php?title=Main_Page
 # https://gitlab.com/libeigen/eigen
-set(EIGEN_DIRNAME eigen-3.3.7)
+set(EIGEN_DIRNAME eigen-3.4.0)
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${EIGEN_DIRNAME}")
-    download_and_extract_library(${EIGEN_DIRNAME} .zip https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip)
+    download_and_extract_library(${EIGEN_DIRNAME} .zip https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip)
 endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${EIGEN_DIRNAME})
 
