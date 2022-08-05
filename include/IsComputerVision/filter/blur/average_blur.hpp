@@ -26,7 +26,7 @@ namespace is
          * @param ksize_y
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr average_blur(NdArrayPtr src, const Size &ksize);
+        IS_CV_API NdArrayPtr average_blur(NdArrayPtr src, const Size &ksize);
 
     }
 }

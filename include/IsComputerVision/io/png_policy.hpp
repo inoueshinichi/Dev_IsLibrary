@@ -16,7 +16,7 @@
 //     using uchar = unsigned char;
 //     using std::shared_ptr;
 
-//     class IS_IMGPROC_API PngFile
+//     class IS_CV_API PngFile
 //     {
 //         // libpng
 //         png_structp png_;

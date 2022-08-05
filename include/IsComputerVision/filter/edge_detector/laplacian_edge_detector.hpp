@@ -25,6 +25,6 @@ namespace is
          * @param is_elem_8
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8 = true);
+        IS_CV_API NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8 = true);
     }
 }

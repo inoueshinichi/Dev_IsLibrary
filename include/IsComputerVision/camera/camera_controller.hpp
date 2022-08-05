@@ -20,7 +20,7 @@ namespace is
          * @brief カメラのコントローラ
          * 
          */
-        class IS_IMGPROC_API CameraController 
+        class IS_CV_API CameraController 
         {
             CameraFrameReader* frameReader_ {nullptr};
             thread* workerThread_ {nullptr};

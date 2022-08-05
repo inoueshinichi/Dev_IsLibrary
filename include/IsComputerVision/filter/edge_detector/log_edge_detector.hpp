@@ -25,7 +25,7 @@ namespace is
          * @param sigma
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma = 0);
+        IS_CV_API NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma = 0);
 
     } // imgproc
 }

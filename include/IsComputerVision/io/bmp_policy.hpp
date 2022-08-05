@@ -17,7 +17,7 @@ namespace is
             // Windows Bitmapファイルのフォーマットについて
             // https://www.mm2d.net/main/prog/c/image_io-05.html
             // https://github.com/ohmae/image-io
-            class IS_IMGPROC_API BmpFile
+            class IS_CV_API BmpFile
             {
                 /*BMPファイルヘッダ (14byte)*/
                 #pragma pack(2) // 構造体のアライメントを2byte境界にすることで、余計な詰め物がない構造体とする. ※重要

@@ -25,6 +25,6 @@ namespace is
          * @param direction
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr sobel_edge_detector(NdArrayPtr src, int direction);
+        IS_CV_API NdArrayPtr sobel_edge_detector(NdArrayPtr src, int direction);
     }
 }

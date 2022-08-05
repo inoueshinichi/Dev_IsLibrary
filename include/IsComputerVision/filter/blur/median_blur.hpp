@@ -26,6 +26,6 @@ namespace is
          * @param ksize_y
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr median_blur(NdArrayPtr src, int ksize);
+        IS_CV_API NdArrayPtr median_blur(NdArrayPtr src, int ksize);
     }
 }

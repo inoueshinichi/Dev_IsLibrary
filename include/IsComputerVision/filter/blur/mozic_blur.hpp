@@ -25,6 +25,6 @@ namespace is
          * @param block
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr mozic_blur(NdArrayPtr src, int block);
+        IS_CV_API NdArrayPtr mozic_blur(NdArrayPtr src, int block);
     }
 }

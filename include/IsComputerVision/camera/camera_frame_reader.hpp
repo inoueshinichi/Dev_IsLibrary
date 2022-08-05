@@ -31,7 +31,7 @@ namespace is
          * @brief カメラフレーム読み取り基底クラス
          * 
          */
-        class IS_IMGPROC_API CameraFrameReader 
+        class IS_CV_API CameraFrameReader 
             : public enable_shared_from_this<CameraFrameReader> 
         {
         public:

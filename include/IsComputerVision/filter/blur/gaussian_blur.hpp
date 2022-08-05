@@ -28,6 +28,6 @@ namespace is
          * @param sigma_y
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr gaussian_blur(NdArrayPtr src, int ksize, double sigma = 0);
+        IS_CV_API NdArrayPtr gaussian_blur(NdArrayPtr src, int ksize, double sigma = 0);
     }
 }

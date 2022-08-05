@@ -7,12 +7,12 @@
 
 #if defined(_MSC_VER) && !defined(__CUDACC__)
     #if defined(imgproc_EXPORTS) || defined(imgproc_dbg_EXPORTS)
-        #define IS_IMGPROC_API __declspec(dllexport)
+        #define IS_CV_API __declspec(dllexport)
     #else
-        #define IS_IMGPROC_API __declspec(dllimport)
+        #define IS_CV_API __declspec(dllimport)
     #endif
 #else
-    #define IS_IMGPROC_API
+    #define IS_CV_API
 #endif
 
 

@@ -13,7 +13,7 @@ namespace is
             using std::string;
             using byte = unsigned char;
 
-            class IS_IMGPROC_API JpgFile
+            class IS_CV_API JpgFile
             {
                 int32_t width_;
                 int32_t height_;
