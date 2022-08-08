@@ -1,8 +1,7 @@
 #pragma once
 
-#include <Windows.h>
-#include <atlstr.h> // CString
-#include <tchar.h>  // _TCHAR
+#include <IsCommon/win32/win32_def.hpp>
+
 
 namespace is
 {

@@ -53,6 +53,9 @@
     #define IS_DEBUG_STREAM(format, ...)
 #endif
 
+// 文字列へ置換
+#define IS_STR_FUNCNAME(func_name) #func_name
+
 // コピーコンストラクタとコピー代入演算子の外部公開を禁止する
 #define IS_DISABLE_COPY_AND_ASSIGN(class_name) \
 private:                                       \
