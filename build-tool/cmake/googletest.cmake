@@ -2,34 +2,20 @@
 
 cmake_minimum_required(VERSION 3.14.6)
 
-function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
+function(BuildGoogleTest GTEST_TARGET GTEST_VERSION GTEST_SHARED_LIB)
 
     message(STATUS "Download and Build GoogleTest with CMake ExternalProject()")
 
     set(GTEST_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external_project/${GTEST_TARGET})
     set(GTEST_INSTALL ${GTEST_PREFIX}/install)
 
+    message(STATUS "GoggleTest Version: ${GTEST_VERSION}")
     message(STATUS "GoogleTest CMake Target: `${GTEST_TARGET}`")
     message(STATUS "CMake ExternalProject Prefix Path: ${GTEST_PREFIX}") # mockがサポートされたのは1.8.0から
     message(STATUS "GoogleTest install dir: ${GTEST_INSTALL}")
     message(STATUS "GoogleTest shared_lib: ${GTEST_SHARED_LIB}")
-    message(STATUS "GoogleTest build always: ${GTEST_BUILD_ALWAYS}")
 
-    # # GoogleTestのコンパイルにはGCCが必要になるので, macOSにおけるパスを指定する.
-    # set(MACOS_GCC_COMPILER_OPTION "")
-    # set(MACOS_GCC_C_PATH "/usr/local/bin/gcc-11")
-    # set(MACOS_GCC_CXX_PATH "/usr/local/bin/g++-11")
-    # set(MACOS_GCC_C_COMPILER "")
-    # set(MACOS_GCC_CXX_COMPILER "")
-    # if(APPLE)
-    #     if (NOT EXISTS ${MACOS_GCC_C_PATH} OR NOT EXISTS ${MACOS_GCC_CXX_PATH})
-    #         message(FATAL_ERROR "Failed to find GCC compiler. Please install GCC compiler on macOS.")
-    #     endif()
-    #     message(STATUS "Found GCC compiler on macOS.")
-    #     set(MACOS_GCC_C_COMPILER "-DCMAKE_C_COMPILER=${MACOS_GCC_C_PATH}")
-    #     set(MACOS_GCC_CXX_COMPILER "-DCMAKE_CXX_COMPILER=${MACOS_GCC_CXX_PATH}")
-    # endif()
-
+  
     # Enable ExternalProject
     include(ExternalProject)
     ExternalProject_Add(
@@ -67,7 +53,7 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
 
         # ---------- Download Version ----------
         # Download archive source url
-        URL https://github.com/google/googletest/archive/release-1.10.0.tar.gz
+        URL https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz
 
         # ---------- Other Setting ----------
         # Timeout
@@ -84,15 +70,15 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
         #################### No.3 Configure Step ####################
         # CMakeビルド時に渡す引数
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL} 
-                   -DBUILD_SHARED_LIBS=${GTEST_SHARED_LIB} 
-                   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} # CMakeのビルドタイプに合わせる
-                   #${MACOS_GCC_C_COMPILER} # Mac OS用 GCCコンパイラへのパス
-                   #${MACOS_GCC_CXX_COMPILER}
+                   -DBUILD_SHARED_LIBS=${GTEST_SHARED_LIB}
+                   -DCMAKE_DEBUG_POSTFIX=d
+                   -DCMAKE_MINSIZEREL_POSTFIX=_minsizerel
+                   -DCMAKE_RELWITHDEBINFO_POSTFIX=_relwithdebinfo
 
 
         #################### No.4 Build Step ####################
         # Build allways or not
-        BUILD_ALWAYS ${GTEST_BUILD_ALWAYS}
+        BUILD_ALWAYS ON
         # Build In Source or not
         BUILD_IN_SOURCE OFF
 
@@ -161,123 +147,145 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
     # 3. gmock[d].(lib, dll @MSVC or a, so @GNU)
     # 4. gmock_main[d].(lib, dll @MSVC or a, so @GNU)
     # ---------------------------------------------------------------------- #
-    set(IMPORTED_LIB_EXT "")
 
+    set(GOOGLETEST_LIB_TYPE "")
     if(${GTEST_SHARED_LIB})
-        # GTest, GTestMain, GMock, GMockMain with shared
-        add_library(GTest::gtest SHARED IMPORTED GLOBAL)
-        add_library(GTest::gmock SHARED IMPORTED GLOBAL)
-        add_library(GTest::gtest_main SHARED IMPORTED GLOBAL)
-        add_library(GTest::gmock_main SHARED IMPORTED GLOBAL)
-        add_dependencies(GTest::gtest ${GTEST_TARGET})
-        add_dependencies(GTest::gmock ${GTEST_TARGET})
-        add_dependencies(GTest::gtest_main ${GTEST_TARGET})
-        add_dependencies(GTest::gmock_main ${GTEST_TARGET})
-
-        # OS別の動的ライブラリの拡張子
-        if(MSVC)
-            set(IMPORTED_LIB_EXT dll)
-        elseif(APPLE)
-            set(IMPORTED_LIB_EXT dylib)
-        else()
-            set(IMPORTED_LIB_EXT so)
-        endif()
+        set(GOOGLETEST_LIB_TYPE SHARED)
     else()
-        # GTest, GTestMain, GMock, GMockMain with static
-        add_library(GTest::gtest STATIC IMPORTED GLOBAL)
-        add_library(GTest::gmock STATIC IMPORTED GLOBAL)
-        add_library(GTest::gtest_main STATIC IMPORTED GLOBAL)
-        add_library(GTest::gmock_main STATIC IMPORTED GLOBAL)
-        add_dependencies(GTest::gtest ${GTEST_TARGET})
-        add_dependencies(GTest::gmock ${GTEST_TARGET})
-        add_dependencies(GTest::gtest_main ${GTEST_TARGET})
-        add_dependencies(GTest::gmock_main ${GTEST_TARGET})
-
-        # OS別の静的ライブラリの拡張子
-        if(MSVC)
-            set(IMPORTED_LIB_EXT lib)
-        elseif(APPLE)
-            set(IMPORTED_LIB_EXT a)
-        else()
-            set(IMPORTED_LIB_EXT a)
-        endif()
+        set(GOOGLETEST_LIB_TYPE STATIC)
     endif()
-    
-    message(STATUS "Extention of GoogleTest's library is `${IMPORTED_LIB_EXT}`.")
-    
 
-    set(LIB_GTEST_NAME "")
-    set(LIB_GMOCK_NAME "")
-    set(LIB_GTEST_MAIN_NAME "")
-    set(LIB_GMOCK_MAIN_NAME "")
+    message(STATUS "GOOGLETEST_LIB_TYPE: ${GOOGLETEST_LIB_TYPE}")
+
+    # Generate IMPORTED_TARGET
+    # GTest, GTestMain, GMock, GMockMain
+    add_library(GTest::gtest ${GOOGLETEST_LIB_TYPE} IMPORTED GLOBAL)
+    add_library(GTest::gmock ${GOOGLETEST_LIB_TYPE} IMPORTED GLOBAL)
+    add_library(GTest::gtest_main ${GOOGLETEST_LIB_TYPE} IMPORTED GLOBAL)
+    add_library(GTest::gmock_main ${GOOGLETEST_LIB_TYPE} IMPORTED GLOBAL)
+
+    add_dependencies(GTest::gtest ${GTEST_TARGET})
+    add_dependencies(GTest::gmock ${GTEST_TARGET})
+    add_dependencies(GTest::gtest_main ${GTEST_TARGET})
+    add_dependencies(GTest::gmock_main ${GTEST_TARGET})
+
+    # message(STATUS "CMAKE_FIND_LIBRARY_PREFIXES: ${CMAKE_FIND_LIBRARY_PREFIXES}")
+    # message(STATUS "CMAKE_FIND_LIBRARY SUFFIXES: ${CMAKE_FIND_LIBRARY_SUFFIXES}")
+
     if(MSVC)
-        set(LIB_GTEST_NAME "gtest")
-        set(LIB_GMOCK_NAME "gmock")
-        set(LIB_GTEST_MAIN_NAME "gtest_main")
-        set(LIB_GMOCK_MAIN_NAME "gmock_main")
-    else()
-        set(LIB_GTEST_NAME "libgtest")
-        set(LIB_GMOCK_NAME "libgmock")
-        set(LIB_GTEST_MAIN_NAME "libgtest_main")
-        set(LIB_GMOCK_MAIN_NAME "libgmock_main")
-    endif()
+        # GTest
+        set_target_properties(GTest::gtest PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/bin/gtest.dll
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/bin/gtestd.dll
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/bin/gtest_relwithdebinfo.dll
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/bin/gtest_minsizerel.dll
+            IMPORTED_IMPLIB_RELEASE ${INSTALL_DIR}/lib/gtest.lib
+            IMPORTED_IMPLIB_DEBUG ${INSTALL_DIR}/lib/gtestd.lib
+            IMPORTED_IMPLIB_RELWITHDEBINFO ${INSTALL_DIR}/lib/gtest_relwithdebinfo.lib
+            IMPORTED_IMPLIB_MINSIZEREL ${INSTALL_DIR}/lib/gtest_minsizerel.lib
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
 
-    if((${CMAKE_BUILD_TYPE} STREQUAL Debug) OR (${CMAKE_BUILD_TYPE} STREQUAL RelWithDebgInfo))
-            # GTest
-            set_target_properties(GTest::gtest PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GTEST_NAME}d.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
+        # GTest_Main
+        set_target_properties(GTest::gtest_main PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/bin/gtest_main.dll
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/bin/gtest_maind.dll
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/bin/gtest_main_relwithdebinfo.dll
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/bin/gtest_main_minsizerel.dll
+            IMPORTED_IMPLIB_RELEASE ${INSTALL_DIR}/lib/gtest_main.lib
+            IMPORTED_IMPLIB_DEBUG ${INSTALL_DIR}/lib/gtest_maind.lib
+            IMPORTED_IMPLIB_RELWITHDEBINFO ${INSTALL_DIR}/lib/gtest_main_relwithdebinfo.lib
+            IMPORTED_IMPLIB_MINSIZEREL ${INSTALL_DIR}/lib/gtest_main_minsizerel.lib
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
 
-            # GMock
-            set_target_properties(GTest::gmock PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GMOCK_NAME}d.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
+        # GMock
+        set_target_properties(GTest::gmock PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/bin/gmock.dll
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/bin/gmockd.dll
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/bin/gmock_relwithdebinfo.dll
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/bin/gmock_minsizerel.dll
+            IMPORTED_IMPLIB_RELEASE ${INSTALL_DIR}/lib/gmock.lib
+            IMPORTED_IMPLIB_DEBUG ${INSTALL_DIR}/lib/gmockd.lib
+            IMPORTED_IMPLIB_RELWITHDEBINFO ${INSTALL_DIR}/lib/gmock_relwithdebinfo.lib
+            IMPORTED_IMPLIB_MINSIZEREL ${INSTALL_DIR}/lib/gmock_minsizerel.lib
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
 
-            # GTestMain
+
+        # GMock
+        set_target_properties(GTest::gmock PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/bin/gmock.dll
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/bin/gmockd.dll
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/bin/gmock_relwithdebinfo.dll
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/bin/gmock_minsizerel.dll
+            IMPORTED_IMPLIB_RELEASE ${INSTALL_DIR}/lib/gmock.lib
+            IMPORTED_IMPLIB_DEBUG ${INSTALL_DIR}/lib/gmockd.lib
+            IMPORTED_IMPLIB_RELWITHDEBINFO ${INSTALL_DIR}/lib/gmock_relwithdebinfo.lib
+            IMPORTED_IMPLIB_MINSIZEREL ${INSTALL_DIR}/lib/gmock_minsizerel.lib
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
+
+        # GMock_Main
+        set_target_properties(GTest::gmock_main PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/bin/gmock_main.dll
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/bin/gmock_maind.dll
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/bin/gmock_main_relwithdebinfo.dll
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/bin/gmock_main_minsizerel.dll
+            IMPORTED_IMPLIB_RELEASE ${INSTALL_DIR}/lib/gmock_main.lib
+            IMPORTED_IMPLIB_DEBUG ${INSTALL_DIR}/lib/gmock_maind.lib
+            IMPORTED_IMPLIB_RELWITHDEBINFO ${INSTALL_DIR}/lib/gmock_main_relwithdebinfo.lib
+            IMPORTED_IMPLIB_MINSIZEREL ${INSTALL_DIR}/lib/gmock_main_minsizerel.lib
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
+
+    else() # UNIX or APPLE
+
+        # GTest
+        set_target_properties(GTest::gtest PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtestd.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_relwithdebinfo.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_minsizerel.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
+
+        # GTest_Main
             set_target_properties(GTest::gtest_main PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GTEST_MAIN_NAME}d.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_maind.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main_relwithdebinfo.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main_minsizerel.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
 
-            # GMockMain
-            set_target_properties(GTest::gmock_main PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GMOCK_MAIN_NAME}d.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
-    else()
-            # GTest
-            set_target_properties(GTest::gtest PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GTEST_NAME}.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
+        # GMock
+        set_target_properties(GTest::gmock PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmockd.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_relwithdebinfo.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_minsizerel.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
 
-            # GMock
-            set_target_properties(GTest::gmock PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GMOCK_NAME}.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
+        # GMock_Main
+        set_target_properties(GTest::gmock_main PROPERTIES
+            IMPORTED_LOCATION_RELEASE ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_main.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_DEBUG ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_maind.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_RELWITHDEBINFO ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_main_relwithdebinfo.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            IMPORTED_LOCATION_MINSIZEREL ${INSTALL_DIR}/lib/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_main_minsizerel.${CMAKE_FIND_LIBRARY_SUFFIXES}
+            INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+            INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
 
-            # GTestMain
-            set_target_properties(GTest::gtest_main PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GTEST_MAIN_NAME}.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
 
-            # GMockMain
-            set_target_properties(GTest::gmock_main PROPERTIES
-                IMPORTED_LOCATION ${INSTALL_DIR}/lib/${LIB_GMOCK_MAIN_NAME}.${IMPORTED_LIB_EXT}
-                INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-                INTERFACE_LINK_LIBRARIES Threads::Threads
-            )
     endif() 
-
 endfunction()
