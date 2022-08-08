@@ -49,11 +49,9 @@
     // Log
 #if (0)
   #define IS_DEBUG_FLAG 0
-  #define IS_DEBUG_STREAM(format, ...)
 #else
   #include <cstdio>
   #define IS_DEBUG_FLAG 1
-  #define IS_DEBUG_STREAM(format, ...) std::printf(format, ##__VA_ARGS__)
 #endif
 
 #include <tuple>
@@ -67,6 +65,7 @@
 #include <IsCommon/format_string.hpp>
 #include <IsCommon/split_string.hpp>
 #include <IsCommon/join_string.hpp>
+#include <IsCommon/IsCommon.hpp>
 
 #define IS_DEBUG_CHECK_NDARRAY_STATE(func, flag, ndarray) \
   if (flag > 0) {                                         \
