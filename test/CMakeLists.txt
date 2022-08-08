@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14.6)
 
 # GoogleTest
 include(${CMAKE_CURRENT_SOURCE_DIR}/../build-tool/cmake/googletest.cmake)
-BuildGoogleTest("GoogleTest" ON ON)
+BuildGoogleTest("GoogleTest" "1.12.0" ON) # 1.12.0 : >= C+14
 
 if((TARGET GTest::gtest)      AND
    (TARGET GTest::gmock)      AND
