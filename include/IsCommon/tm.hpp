@@ -14,6 +14,7 @@
 #include <ctime> // clock
 #include <chrono>
 #if defined(_MSC_VER)
+#define NOMAXMIN // Workaround for windows max, min macro
 #include <Windows.h> // GetTickCount, timeGetTime, QueryPerformanceCounter
 #endif
 #include <iostream>
