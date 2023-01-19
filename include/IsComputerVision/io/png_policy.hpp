@@ -8,7 +8,7 @@
 
 // namespace is
 // {
-// namespace imgproc
+// namespace cv
 // {
 // namespace format
 // {

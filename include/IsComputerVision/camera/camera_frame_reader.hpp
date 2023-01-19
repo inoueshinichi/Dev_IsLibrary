@@ -18,7 +18,7 @@ using namespace std::chrono;
 
 namespace is 
 {
-    namespace imgproc 
+    namespace cv 
     {
         using std::mutex;
         using std::vector;

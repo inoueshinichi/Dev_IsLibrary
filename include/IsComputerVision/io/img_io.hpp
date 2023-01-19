@@ -9,7 +9,7 @@
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
         using std::string;
         using std::shared_ptr;

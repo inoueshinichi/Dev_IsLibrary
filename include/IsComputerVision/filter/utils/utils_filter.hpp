@@ -26,7 +26,7 @@
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
         using namespace nbla;
 

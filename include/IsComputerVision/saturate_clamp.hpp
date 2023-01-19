@@ -17,7 +17,7 @@
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
         using uchar = unsigned char;
         using ushort = unsigned short;

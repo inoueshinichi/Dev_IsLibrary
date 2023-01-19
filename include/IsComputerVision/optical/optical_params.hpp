@@ -32,7 +32,7 @@
 
 
 namespace is {
-    namespace imgproc {
+    namespace cv {
 
         /**
          * @brief 許容錯乱円

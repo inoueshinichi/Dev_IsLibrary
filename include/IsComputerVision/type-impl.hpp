@@ -12,7 +12,7 @@
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
         ////////////////////////////////////////////////////
         // Point_ 2次元座標プライマリーテンプレートクラス

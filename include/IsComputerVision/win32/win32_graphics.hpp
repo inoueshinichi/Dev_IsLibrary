@@ -10,7 +10,7 @@ static_assert(_MSC_FULL_VER >= 190023506,
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
         
         class IS_CV_API WinBmp

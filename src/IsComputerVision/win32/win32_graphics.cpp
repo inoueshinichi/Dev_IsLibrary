@@ -4,7 +4,7 @@
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
        
         WinBmp::WinBmp() 

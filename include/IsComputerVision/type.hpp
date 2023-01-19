@@ -12,7 +12,7 @@
 
 namespace is
 {
-    namespace imgproc
+    namespace cv
     {
         // // 前方宣言
         // template <typename T>

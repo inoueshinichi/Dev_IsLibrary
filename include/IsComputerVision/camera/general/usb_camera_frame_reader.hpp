@@ -17,7 +17,7 @@
 
 namespace is 
 {
-    namespace imgproc 
+    namespace cv 
     {
         /**
          * @brief USBカメラフレーム取り込みクラス
@@ -25,8 +25,8 @@ namespace is
          */
         class IS_CV_API UsbCameraFrameReader : public CameraFrameReader 
         {
-            cv::VideoCapture* capPtr_;
-            cv::Mat cvFrame;
+            ::cv::VideoCapture* capPtr_;
+            ::cv::Mat cvFrame;
 
         public:
             UsbCameraFrameReader();

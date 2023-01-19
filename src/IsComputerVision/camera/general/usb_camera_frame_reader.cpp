@@ -6,7 +6,7 @@
 
 namespace is 
 {
-    namespace imgproc 
+    namespace cv 
     {
         // -------------------------- UsbCameraFrameReader --------------------------
 
@@ -44,7 +44,7 @@ namespace is
             IS_DEBUG_STREAM("[Enter] >>> Initialize\n");
             IS_DEBUG_STREAM("Device Id: %d\n", getDeviceId());
         
-            capPtr_ = new cv::VideoCapture(getDeviceId());//, cv::CAP_GSTREAMER); // cv::CAP_V4L2 cv::CAP_GSTREAMER
+            capPtr_ = new ::cv::VideoCapture(getDeviceId());//, cv::CAP_GSTREAMER); // cv::CAP_V4L2 cv::CAP_GSTREAMER
             
             if (!capPtr_->isOpened()) 
             {
@@ -68,15 +68,15 @@ namespace is
 
             // capPtr_->set(cv::CAP_PROP_FPS, 30);
 
-            auto width = capPtr_->get(cv::CAP_PROP_FRAME_WIDTH);
-            auto height = capPtr_->get(cv::CAP_PROP_FRAME_HEIGHT);
-            auto fps = capPtr_->get(cv::CAP_PROP_FPS);
+            auto width = capPtr_->get(::cv::CAP_PROP_FRAME_WIDTH);
+            auto height = capPtr_->get(::cv::CAP_PROP_FRAME_HEIGHT);
+            auto fps = capPtr_->get(::cv::CAP_PROP_FPS);
             IS_DEBUG_STREAM("Fps: %f, Width: %d, Height: %d\n", fps, (int)width, (int)height);
 
             // capPtr_->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('H', '2', '6', '4'));
             // capPtr_->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
             char forcc[4];
-            int symbol = (int)capPtr_->get(cv::CAP_PROP_FOURCC);
+            int symbol = (int)capPtr_->get(::cv::CAP_PROP_FOURCC);
             for (int i = 0; i < 4; ++i) {
                 forcc[i] = (char)(symbol >> 8 * i) & 0xff;
             }
@@ -146,10 +146,10 @@ namespace is
             if (bret) {
 
                 if (channels_ == 3) {
-                    cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BGR2RGB);
+                    ::cv::cvtColor(cvFrame, cvFrame, ::cv::COLOR_BGR2RGB);
                 }
                 else if (channels_ == 4) {
-                    cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BGRA2RGBA);
+                    ::cv::cvtColor(cvFrame, cvFrame, ::cv::COLOR_BGRA2RGBA);
                 }
 
                 if (cvFrame.isContinuous()) {
