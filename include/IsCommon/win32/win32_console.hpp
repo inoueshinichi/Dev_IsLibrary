@@ -11,9 +11,7 @@
 
 #pragma once
 
-#include <IsCommon/IsCommon.hpp>
-
-#include <Windows.h>
+#include <IsCommon/win32/win32_def.hpp>
 
 #include <cstdio>
 

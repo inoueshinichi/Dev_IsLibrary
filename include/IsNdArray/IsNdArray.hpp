@@ -3,6 +3,8 @@
 #ifdef _MSC_VER
     // https://qiita.com/Chironian/items/462a3bdf271d5f0b00b6#%EF%BC%92%EF%BC%93c4251%E8%AD%A6%E5%91%8A%E3%81%8C%E5%87%BA%E3%82%8B
     #pragma warning(disable:4251)
+
+    #define NOMAXMIN // workaround for windows max-min macro
 #endif
 
 #if defined(_MSC_VER) && !defined(__CUDACC__)

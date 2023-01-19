@@ -2,8 +2,7 @@
 #include <IsCommon/win32/win32_api_error.hpp>
 #include <IsCommon/format_string.hpp>
 
-#include "tchar.h" // _T()
-#include <atlstr.h> // CString
+
 #include <io.h>    // _isatty
 
 namespace is {
