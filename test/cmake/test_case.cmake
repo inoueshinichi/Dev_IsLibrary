@@ -2,19 +2,29 @@ cmake_minimum_required(VERSION 3.14.6)
 
 
 function(make_test_case SOURCE_CODE TEST_TARGET_EXE)
-
-    # find_package(Python3 COMPONENTS Development NumPy)
-
     # Exe file
     add_executable(${TEST_TARGET_EXE}
         ${SOURCE_CODE}
     )
 
-    # Include
-    target_include_directories(${TEST_TARGET_EXE} PRIVATE
-        ${Python3_INCLUDE_DIRS}
-        ${Python3_NumPy_INCLUDE_DIRS}
-    )
+    # # Python3
+    # # TODO: Use `Development.Embed` component when requiring cmake >= 3.18
+    # find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+    # target_link_libraries(${TEST_TARGET_EXE} INTERFACE
+    #     Python3::Python
+    #     Python3::Module
+    # )
+
+    # # Numpy
+    # find_package(Python3 COMPONENTS NumPy)
+    # if(Python3_NumPy_FOUND)
+    #     target_link_libraries(${TEST_TARGET_EXE} INTERFACE
+    #         Python3::NumPy
+    #     )
+    # else()
+    #     target_compile_definitions(${TEST_TARGET_EXE} INTERFACE WITHOUT_NUMPY)
+    # endif()
+
 
     # Libarary-link
     target_link_libraries(${TEST_TARGET_EXE} PRIVATE
@@ -23,8 +33,6 @@ function(make_test_case SOURCE_CODE TEST_TARGET_EXE)
         ${IS_COMPUTERVISION_TARGET_NAME}
         GTest::gtest
         GTest::gmock
-        # Python3::Python
-        # Python3::NumPy
     )
 
     # Build-order
