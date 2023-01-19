@@ -72,16 +72,17 @@ namespace is
                 int32_t       channels_;
                 size_t        mem_width_;
                 size_t        datasize_;
+                bool          bmp_upside_down_;
 
                 void clear();
                 void setup(int32_t height, int32_t width, int32_t channels);
                 void dump() const;
+
+                IS_DISABLE_COPY_AND_ASSIGN(BmpFile)
                 
             public:
                 BmpFile();
-                virtual ~BmpFile();
-                BmpFile(const BmpFile &) = delete;
-                BmpFile &operator=(const BmpFile &) = delete;
+                ~BmpFile();
                 BmpFile(BmpFile &&) = default;
                 BmpFile &operator=(BmpFile &&) = default;
 
@@ -90,10 +91,10 @@ namespace is
                 int channels() const { return channels_; }
                 size_t datasize() const { return datasize_; }
 
-                void set_data(uchar *data, int height, int width, int channels, int insert_color = -1);
-                bool get_data(uchar *data, int extract_color = -1);
-                bool save(const string &filename, bool is_dump);
-                bool load(const string &filename, int &height, int &width, int &channels, bool is_dump);
+                void set(uchar* data, int height, int width, int channels, int insert_color = -1);
+                bool copy(uchar* data, int extract_color = -1);
+                void save(const string& filename, bool is_dump);
+                bool load(const string& filename, int& height, int& width, int& channels, bool is_dump);
             };
         } // namespace format
     } // namespace imgproc

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "matplotlibcpp.h"
-namespace plt = matplotlibcpp;
+// #include "matplotlibcpp.h"
+// namespace plt = matplotlibcpp;
 
 #include <IsCommon/tm.hpp>
 
@@ -34,37 +34,48 @@ namespace
 
         // Bmp
         ImageIo<BmpFile> io_bmp;
-        auto test_ndarray = io_bmp.load(dummy_filename, true);
-        if (!test_ndarray)
+        auto t_ndarray = io_bmp.load(dummy_filename, true);
+        if (!t_ndarray)
         {
             std::cerr << "Error loaded ndarray is nullptr" << std::endl;
         }
 
-        auto test_strides = test_ndarray->strides();
-        auto test_shape = test_ndarray->shape();
-        byte * data = test_ndarray->cast_data_and_get_pointer<byte>(ctx_cpu);
-        std::printf("size(%ld, %ld, %ld)\n", test_shape[0], test_shape[1], test_shape[2]);
+        auto t_strides = t_ndarray->strides();
+        auto t_shape = t_ndarray->shape();
+        byte * data = t_ndarray->cast_data_and_get_pointer<byte>(ctx_cpu);
+        std::printf("Image size(%ld, %ld, %ld)\n", t_shape[0], t_shape[1], t_shape[2]);
 
-        for (int c = 0; c < test_shape[0]; ++c)
+        // for (int c = 0; c < t_shape[0]; ++c)
+        // {
+        //     for (int y = 0; y < t_shape[1]; ++y)
+        //     {
+        //         for (int x = 0; x < t_shape[2]; ++x)
+        //         {
+        //             if (y == x)
+        //                 data[c * t_strides[0] + y * t_strides[1] + x * t_strides[2]] = 0;
+        //         }
+        //     }
+        // }
+        for (int y = 0; y < t_shape[0]; y++)
         {
-            for (int y = 0; y < test_shape[1]; ++y)
+            for (int x = 0; x < t_shape[1]; x++)
             {
-                for (int x = 0; x < test_shape[2]; ++x)
+                for (int c = 0; c < t_shape[2]; c++)
                 {
                     if (y == x)
-                        data[c * test_strides[0] + y * test_strides[1] + x * test_strides[2]] = 0;
+                        data[y * t_strides[0] + x * t_strides[1] + c * t_strides[2]] = 0;
                 }
             }
         }
 
         // Matplotlib
-        int height = test_shape[0];
-        int width = test_shape[1];
+        int height = t_shape[0];
+        int width = t_shape[1];
         // plt::imshow(data, height, width, 1); // BMPファイルの表示
         // plt::show();
 
         dummy_filename = TEST_OUTPUT_DIR "Tree_out.bmp";
-        io_bmp.save(dummy_filename, test_ndarray, true);
+        io_bmp.save(dummy_filename, t_ndarray, true);
     }
 
 

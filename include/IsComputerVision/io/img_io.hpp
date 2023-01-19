@@ -18,42 +18,43 @@ namespace is
         class ImageIo
         {
             ImageFile format_policy_;
-            
+
+            IS_DISABLE_COPY_AND_ASSIGN(ImageIo)
         public:
             ImageIo() = default;
             ~ImageIo() = default;
-            ImageIo(const ImageIo&) = delete;
-            ImageIo& operator=(const ImageIo&) = delete;
-            ImageIo(ImageIo&&) = delete;
-            ImageIo& operator=(ImageIo&&) = delete;
+            ImageIo(ImageIo&&) = default;
+            ImageIo& operator=(ImageIo&&) = default;
 
-            bool save(const string& filename, nbla::NdArrayPtr ndarray, bool is_dump = false)
+            void save(const string& filename, nbla::NdArrayPtr ndarray, bool is_dump = false)
             {
                 using uchar = unsigned char;
                 using namespace nbla;
                 if (!ndarray) 
                 {
                     std::cerr << "NdArray is nullptr." << std::endl;
-                    return false;
+                    return;
                 }
-                
-                int32_t channels = 0;
+
                 int32_t width = 0;
                 int32_t height = 0;
-                Shape_t sh = ndarray->shape(); // (C,H,W)
+                int32_t channels = 0;
+                
+                Shape_t sh = ndarray->shape(); // (H,W,C)
                 Size_t ndim = ndarray->ndim();
+
                 if (ndim == 2) 
                 {
                     height = sh.at(0);
                     width = sh.at(1);
                     channels = 1;
-                    ndarray->reshape(Shape_t{channels, height, width});
+                    ndarray->reshape(Shape_t{height, width, channels});
                 }
                 else if (ndim == 3) 
                 {
-                    channels = sh.at(0);
-                    height = sh.at(1);
-                    width = sh.at(2);
+                    height = sh.at(0);
+                    width = sh.at(1);
+                    channels = sh.at(2);
                 } 
                 else
                 {
@@ -61,44 +62,19 @@ namespace is
                         "Unmatch shape of ndarray for bitmap file format. Given is %d", ndarray->ndim()));
                 }
                 
-                sh = ndarray->shape();
-                auto st = ndarray->strides();
-                std::printf("(C,H,W)=(%d,%d,%d)\n", channels, height, width);
-                std::printf("strides(%d,%d,%d)\n", st[0], st[1], st[2]);
-
                 // GlobalContext
-                const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+                const auto& ctx = SingletonManager::get<GlobalContext>()->get_current_context();
 
-                uchar *data = ndarray->cast_data_and_get_pointer<uchar>(ctx);
-
-                auto tmp_array = zeros<uchar>(Shape_t{height, width, channels});
-                auto tmp_sh = tmp_array->shape();
-                auto tmp_st = tmp_array->strides();
-                uchar *tmp_data = tmp_array->cast_data_and_get_pointer<uchar>(ctx);
-                std::printf("tmp_shape(H,W,C)=(%ld,%ld,%ld)\n", tmp_sh[0], tmp_sh[1], tmp_sh[2]);
-                std::printf("tmp_strides(%d,%d,%d)\n", tmp_st[0], tmp_st[1], tmp_st[2]);
-
-                for (int c = 0; c < channels; ++c)
-                {
-                    for (int y = 0; y < height; ++y)
-                    {
-                        for (int x = 0; x < width; ++x)
-                        {
-                            tmp_data[y * tmp_st[0] + x * tmp_st[1] + c * tmp_st[2]] =
-                                data[c * st[0] + y * st[1] + x * st[2]];
-                        }
-                    }
-                }
+                uchar* data = ndarray->cast_data_and_get_pointer<uchar>(ctx);
                 
-                // 書き込み
-                format_policy_.set_data(tmp_data, height, width, channels);
-                // format_policy_.set_data(data, height, width, channels);
+                // 画像データをセット
+                format_policy_.set(data, height, width, channels);
 
                 // 画像ファイルに書き出し
-                return format_policy_.save(filename, is_dump);
+                format_policy_.save(filename, is_dump);
             }
 
-            nbla::NdArrayPtr load(const string &filename, bool is_dump = false)
+            nbla::NdArrayPtr load(const string& filename, bool is_dump = false)
             {
                 using uchar = unsigned char;
                 using namespace nbla;
@@ -114,37 +90,16 @@ namespace is
                 }
 
                 // GlobalContext
-                const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-
-                auto ndarray = zeros<uchar>(Shape_t{channels, height, width});
-                auto st = ndarray->strides();
-                uchar *data = ndarray->cast_data_and_get_pointer<uchar>(ctx);
+                const auto& ctx = SingletonManager::get<GlobalContext>()->get_current_context();
 
                 // (h, w, c)
-                auto tmp_array = zeros<uchar>(Shape_t{height, width, channels});
-                auto tmp_sh = tmp_array->shape();
-                auto tmp_st = tmp_array->strides();
-                uchar *tmp_data = tmp_array->cast_data_and_get_pointer<uchar>(ctx);
-                std::printf("tmp_shape(H,W,C)=(%ld,%ld,%ld)\n", tmp_sh[0], tmp_sh[1], tmp_sh[2]);
-                std::printf("tmp_strides(%d,%d,%d)\n", tmp_st[0], tmp_st[1], tmp_st[2]);
+                auto ndarray = zeros<uchar>(Shape_t{height, width, channels});
+                auto st = ndarray->strides();
+                uchar* data = ndarray->cast_data_and_get_pointer<uchar>(ctx);
 
                 // NdArrayにコピー
-                format_policy_.get_data(tmp_data);
-
-                for (int c = 0; c < channels; ++c)
-                {
-                    for (int y = 0; y < height; ++y)
-                    {
-                        for (int x = 0; x < width; ++x)
-                        {
-                            data[c * st[0] + y * st[1] + x * st[2]] = 
-                             tmp_data[y * tmp_st[0] + x * tmp_st[1] + c * tmp_st[2]];
-                        }
-                    }
-                }
-
-                std::printf("channels: %d, height: %d, width: %d\n", channels, height, width);
-
+                format_policy_.copy(data);
+                
                 return ndarray;
             }
         };
