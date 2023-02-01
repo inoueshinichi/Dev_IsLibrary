@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include <IsCommon/internal/defs.hpp>
+
 #include <memory>
 #include <vector>
 #include <string>
@@ -59,7 +61,7 @@ namespace is {
             template <typename... Args>
             std::string format_string_internal(const std::string &format, Args &&...args) {
                 /* フォーマット後の文字数を算出 */
-                int32 size = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...);
+                int size = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...);
                 if (size < 0) {
                     std::printf("Fatal error: std::snprintf() in is::detail::format_string_internal().\n");
                     std::abort();

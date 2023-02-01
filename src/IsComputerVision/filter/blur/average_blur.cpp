@@ -5,8 +5,6 @@ namespace is
 {
     namespace cv
     {
-        using uchar = unsigned char;
-
         NdArrayPtr average_blur(NdArrayPtr src, const Size& ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
@@ -34,15 +32,15 @@ namespace is
                 p_kernel[k] = 1.0 / kernel_size;
 
             // パディング
-            auto extend = padding<uchar>(src, hlf_ksx, hlf_ksy, IS_PADDING_MEAN);
+            auto extend = padding<ubyte>(src, hlf_ksx, hlf_ksy, IS_PADDING_MEAN);
             
             // 演算結果
-            auto dst = zeros<uchar>(sh);
+            auto dst = zeros<ubyte>(sh);
 
             auto start = std::chrono::high_resolution_clock::now();
 
             // 畳み込み演算
-            convolution<uchar>(dst, extend, Size(ksize_x, ksize_y), p_kernel);
+            convolution<ubyte>(dst, extend, Size(ksize_x, ksize_y), p_kernel);
 
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

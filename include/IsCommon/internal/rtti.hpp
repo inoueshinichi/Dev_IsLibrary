@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include <IsCommon/internal/defs.hpp>
+
 #include <typeinfo>
 #include <iostream>
 #include <string>
@@ -34,7 +36,7 @@
             #define IS_SINGLETON_LOG(MESSAGE, SINGLETON)                                \
             std::string singleton_name;                                                 \
             const std::type_info &type_id = typeid(SINGLETON); /* RTTI */               \
-            int32 stat{-1};                                                             \
+            int stat{-1};                                                               \
             char *name = abi::__cxa_demangle(type_id.name(), 0, 0, &stat);              \
             if (name != nullptr)                                                        \
             {                                                                           \

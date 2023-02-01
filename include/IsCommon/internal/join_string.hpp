@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include <IsCommon/internal/defs.hpp>
+
 #include <string>
 #include <vector>
 #include <sstream>
@@ -33,7 +35,7 @@ namespace is {
                 return "";
             }
 
-            for (int32 i = 0; i < vector.size() - 1; ++i) {
+            for (int i = 0; i < vector.size() - 1; ++i) {
                 ss << vector[i] << delimiter;
             }
             ss << vector[vector.size() - 1];

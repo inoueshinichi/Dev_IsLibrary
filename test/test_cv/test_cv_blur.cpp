@@ -3,13 +3,9 @@
 // #include "matplotlibcpp.h"
 // namespace plt = matplotlibcpp;
 
-#include <IsCommon/tm.hpp>
+#include <IsComputerVision/common.hpp>
 
-// nbla
-#include <IsNdArray/nd_array_extra.hpp>
-
-// imgproc
-#include <IsComputerVision/IsComputerVision.hpp>
+// io
 #include <IsComputerVision/io/img_io.hpp>
 
 // filter/blur
@@ -25,12 +21,9 @@
 #include <string>
 #include <cstdio>
 
-using uchar = unsigned char;
 using namespace is::nbla;
 using namespace is::common;
 using namespace is::cv;
-
-
 
 namespace 
 {
@@ -48,7 +41,7 @@ namespace
         show_ndarray_property(src);
 
         // transpose (H,W,C) -> (C,H,W)
-        src = transpose<uchar>(src, {2, 0, 1});
+        src = transpose<ubyte>(src, {2, 0, 1});
 
         // src
         auto in_shape = src->shape();
@@ -64,7 +57,7 @@ namespace
                                        ksize_x, ksize_y);
 
         // transpose (C,H,W) -> (H,W,C)
-        filtered = transpose<uchar>(filtered, {1, 2, 0});
+        filtered = transpose<ubyte>(filtered, {1, 2, 0});
 
         io_bmp.save(dummy_filename, filtered, false);
     }

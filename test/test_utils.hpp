@@ -1,4 +1,4 @@
-#include <IsCommon/tm.hpp> // 時間計測
+#include <IsComputerVision/common.hpp> 
 
 #include <iostream>
 #include <string>

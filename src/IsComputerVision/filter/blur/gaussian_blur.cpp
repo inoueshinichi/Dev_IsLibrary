@@ -7,12 +7,18 @@ namespace is
     {
         using uchar = unsigned char;
 
-
+        /**
+         * @brief ガウシアンフィルタ
+         * 
+         * @param src 
+         * @param ksize 
+         * @param sigma 
+         * @return NdArrayPtr 
+         */
         NdArrayPtr gaussian_blur(NdArrayPtr src, int ksize, double sigma)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
-            using ubyte = uchar;
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();

@@ -11,8 +11,7 @@ namespace is
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
-            using ubyte = uchar;
-
+    
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();
             auto st = src->strides();

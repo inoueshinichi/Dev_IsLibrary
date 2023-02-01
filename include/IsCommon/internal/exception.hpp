@@ -101,10 +101,10 @@ namespace is {
             string msg_;      // エラーメッセージ
             string func_;     // エラーが発生した関数名
             string file_;     // エラーが発生したファイル名
-            uint32 line_;     // エラーが発生した行番号
+            int line_;     // エラーが発生した行番号
 
         public:
-            Exception(error_code code, const string &msg, const string &func, const string &file, uint32 line);
+            Exception(error_code code, const string &msg, const string &func, const string &file, int line);
             virtual ~Exception() throw();
             virtual const char *what() const throw();
         };

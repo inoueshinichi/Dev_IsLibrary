@@ -7,10 +7,6 @@ namespace is
     {
         using namespace nbla;
 
-        using uchar = unsigned char;
-
-        NdArrayPtr median(NdArrayPtr src, int ksize)
-        {
-            
-        }
+       
+    }
 }

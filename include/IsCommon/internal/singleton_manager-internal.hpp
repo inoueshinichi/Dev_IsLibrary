@@ -51,7 +51,7 @@ namespace is {
         }
 
         template <typename SINGLETON>
-        int32 SingletonManager::get_id() {
+        int SingletonManager::get_id() {
             SingletonManager &self_ = SingletonManager::get_self();
             auto address = (uintptr_t)(get<SINGLETON>());
             return self_.address2id_[address];

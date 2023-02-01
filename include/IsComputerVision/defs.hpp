@@ -20,6 +20,6 @@
     #define IS_CV_API
 #endif
 
-
-
-
+#ifdef _OPENMP
+    #include <omp.h>
+#endif
