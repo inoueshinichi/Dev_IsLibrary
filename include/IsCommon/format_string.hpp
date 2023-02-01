@@ -59,7 +59,7 @@ namespace is {
             template <typename... Args>
             std::string format_string_internal(const std::string &format, Args &&...args) {
                 /* フォーマット後の文字数を算出 */
-                int size = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...);
+                int32 size = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...);
                 if (size < 0) {
                     std::printf("Fatal error: std::snprintf() in is::detail::format_string_internal().\n");
                     std::abort();

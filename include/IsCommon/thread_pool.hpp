@@ -43,7 +43,7 @@ namespace is {
 
         class IS_COMMON_API ThreadPool {
         public:
-            ThreadPool(int workers);
+            ThreadPool(int32 workers);
             virtual ~ThreadPool();
 
             template <typename Func, typename... Args>

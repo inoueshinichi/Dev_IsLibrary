@@ -43,7 +43,7 @@ namespace is {
                 instance = nullptr;
             };
 
-            int id = self_.count_;
+            int32 id = self_.count_;
             self_.singletons_.insert({id, {(uintptr_t)instance, deleter}}); // Register deleter
             self_.address2id_.insert({(uintptr_t)instance, id});            // Register ID
             self_.count_ += 1;
@@ -51,7 +51,7 @@ namespace is {
         }
 
         template <typename SINGLETON>
-        int SingletonManager::get_id() {
+        int32 SingletonManager::get_id() {
             SingletonManager &self_ = SingletonManager::get_self();
             auto address = (uintptr_t)(get<SINGLETON>());
             return self_.address2id_[address];

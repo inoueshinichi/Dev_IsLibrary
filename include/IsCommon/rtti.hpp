@@ -34,7 +34,7 @@
             #define IS_SINGLETON_LOG(MESSAGE, SINGLETON)                                \
             std::string singleton_name;                                                 \
             const std::type_info &type_id = typeid(SINGLETON); /* RTTI */               \
-            int stat{-1};                                                               \
+            int32 stat{-1};                                                             \
             char *name = abi::__cxa_demangle(type_id.name(), 0, 0, &stat);              \
             if (name != nullptr)                                                        \
             {                                                                           \

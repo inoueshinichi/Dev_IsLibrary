@@ -43,10 +43,10 @@ namespace is {
              * @brief シングルトンクラスを識別するIDを取得
              * 
              * @tparam SINGLETON 
-             * @return int 
+             * @return int32
              */
             template <typename SINGLETON>
-            static int get_id();
+            static int32 get_id();
 
             /**
              * @brief 登録済みのすべてのシングルトンインスタンスを削除
@@ -67,17 +67,17 @@ namespace is {
              * 
              * @param id 
              */
-            static void erase_by_id(int id);
+            static void erase_by_id(int32 id);
 
 
         private:
-            int count_{0}; // 登録されたシングルトンインスタンスの数
+            int32 count_{0}; // 登録されたシングルトンインスタンスの数
 
             // IDから[シングルトンinstance, (addressとdeleter関数)]へのHashマップ
             unordered_map<int, pair<uintptr_t, std::function<void()>>> singletons_;
 
             // addressからIDへのHashマップ
-            unordered_map<uintptr_t, int> address2id_;
+            unordered_map<uintptr_t, int32> address2id_;
 
             /**
              * @brief シングルトンインスタンスへのポインタ

@@ -43,7 +43,7 @@ namespace is
 
         /* =============== Exception =============== */
         Exception::Exception(error_code code, const string &msg,
-                             const string &func, const string &file, int line)
+                             const string &func, const string &file, uint32 line)
             : code_(code), msg_(msg), func_(func), file_(file), line_(line)
         {
 

@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <IsCommon/defs.hpp>
+
 #include <ctime> // clock
 #include <chrono>
 #include <iostream>

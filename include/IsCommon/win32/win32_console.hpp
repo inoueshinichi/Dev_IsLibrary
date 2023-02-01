@@ -52,9 +52,9 @@ namespace is {
                 FILE *m_fpIn;  // Input File Pointer
                 FILE *m_fpOut; // Output File Pointer
                 FILE *m_fpErr; // Error FIle Pointer
-                int m_fdIn;    // Input File Descriptor
-                int m_fdOut;   // Output File Descriptor
-                int m_fdErr;   // Erro FIle Descriptor
+                int32 m_fdIn;    // Input File Descriptor
+                int32 m_fdOut;   // Output File Descriptor
+                int32 m_fdErr;   // Erro FIle Descriptor
                 HANDLE m_hIn;  // Input Handle
                 HANDLE m_hOut; // Output Handle
                 HANDLE m_hErr; // Error Handle
@@ -63,7 +63,7 @@ namespace is {
                 DWORD m_outputConsoleMode;
                 BOOL m_isStartUp;
 
-                static const int WINDOW_TITLE_LENGTH;
+                static const int32 WINDOW_TITLE_LENGTH;
 
                 BOOL initialize();
 
@@ -73,8 +73,8 @@ namespace is {
 
                 static BOOL WINAPI ConsoleSignalHandler(DWORD dwCtrlType);
 
-                int get_mode();
-                int enable_ansi_escape_seqence();
+                int32 get_mode();
+                int32 enable_ansi_escape_seqence();
                 void show_console_mode();
             };
         }

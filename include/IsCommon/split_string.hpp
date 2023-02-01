@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include <IsCommon/defs.hpp>
+
 #include <string>
 #include <vector>
 
@@ -25,7 +27,7 @@ namespace is {
          */
         inline std::vector<std::string> 
         split_string(const std::string &msg, const std::string &sep) {
-            int len_sep = sep.length();
+            uint64 len_sep = sep.length();
             std::vector<std::string> tokens;
 
             if (len_sep == 0) {

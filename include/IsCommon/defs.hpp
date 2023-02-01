@@ -45,3 +45,20 @@ private:                                               \
 #else
     #define IS_INVOKE_RESULT_TYPE(Func, Args) typename std::invoke_result<Func, Args...>::type
 #endif
+
+
+// プリミティブ型のエイリアス
+using byte = char;
+using ubyte = unsigned char;
+using int16 = short;
+using uint16 = unsigned short;
+using int32 = int;
+using uint32 = unsigned int;
+
+#if defined(_WIN32)
+    using int64 = long long;
+    using uint64 = unsigned long long;
+#else
+    using int64 = long;
+    using uint64 = unsigned long;
+#endif
