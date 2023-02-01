@@ -9,7 +9,9 @@
  * 
  */
 
-#include <IsCommon/IsCommon.hpp>
+#include <IsCommon/defs.hpp>
+#include <IsCommon/format_string.hpp>
+
 
 #include <cstdio>
 #include <cstdlib>

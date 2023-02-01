@@ -27,7 +27,7 @@ namespace is
 
             // http://opencv.jp/opencv-2.1/cpp/image_filtering.html#getGaussianKernel
             sigma = (sigma != 0) ? sigma : 0.3 * (ksize / 2 - 1) + 0.8;
-            IS_DEBUG_STREAM("sigma: %.3f\n", sigma);
+            IS_DEBUG_LOG("sigma: %.3f\n", sigma);
 
             int dx, dy;
             double norm, sig2, coef, dist, val;

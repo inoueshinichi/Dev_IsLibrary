@@ -1,11 +1,7 @@
 #pragma once
 
 #include <IsComputerVision/IsComputerVision.hpp>
-#include <IsComputerVision/camera/general/usb_camera_frame_reader.hpp>
-
-#include <string>
-#include <thread>
-#include <future>
+#include <IsComputerVision/camera/camera_frame_reader.hpp>
 
 namespace is 
 {

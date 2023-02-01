@@ -39,7 +39,7 @@ namespace is
             datasize_ = 0;
         }
 
-        void WinBmp::setup(int32_t width, int32_t height, int32_t channels)
+        void WinBmp::setup(int width, int height, int channels)
         {
             clear();
 
@@ -52,7 +52,7 @@ namespace is
 
             // 4バイト境界単位の画像1行のメモリサイズを計算
             int padding = 0;
-            uint16_t bit_count = 0;
+            uint16 bit_count = 0;
             size_t mem_width = 0;
             if (channels == 1)
             {
@@ -124,7 +124,7 @@ namespace is
             }
             
             /*データ部*/
-            bmp_ = new byte[this->datasize_];
+            bmp_ = new BYTE[this->datasize_];
             std::memset((void *)bmp_, 0, this->datasize_);
         }
 

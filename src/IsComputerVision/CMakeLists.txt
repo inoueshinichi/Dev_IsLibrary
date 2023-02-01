@@ -17,7 +17,6 @@ file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     ./filter/edge_detector/*.cpp
 #    ./filter/sharpness/*.cpp
     ./camera/*.cpp
-    ./camera/general/*.cpp
 )
 
 

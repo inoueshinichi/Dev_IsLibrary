@@ -1,10 +1,6 @@
-#include <IsCommon/IsCommon.hpp>
-#include <IsCommon/format_string.hpp>
 
 #include <IsComputerVision/camera/camera_controller.hpp>
-
-#include <iostream>
-#include <stdexcept>
+#include <IsComputerVision/camera/usb_camera_frame_reader.hpp>
 
 namespace is 
 {
@@ -101,7 +97,7 @@ namespace is
                 throw std::runtime_error(msg);
             }
 
-            IS_DEBUG_STREAM("maker: %s, type: %s\n", maker.c_str(), type.c_str());
+            IS_DEBUG_LOG("maker: %s, type: %s\n", maker.c_str(), type.c_str());
         }
 
 
@@ -109,7 +105,7 @@ namespace is
         {
             if (!frameReader_) 
             {
-                IS_DEBUG_STREAM("No configure frame reader. Please configure maker and type.\n");
+                IS_DEBUG_LOG("No configure frame reader. Please configure maker and type.\n");
                 return false;
             }
 
@@ -133,7 +129,7 @@ namespace is
         {
             if (!workerThread_) 
             {
-                IS_DEBUG_STREAM("Don't start worker thread.\n");
+                IS_DEBUG_LOG("Don't start worker thread.\n");
                 return;
             }
 
@@ -155,31 +151,17 @@ namespace is
             delete workerThread_;
             workerThread_ = nullptr;
 
-            IS_DEBUG_STREAM("[Stop] worker thread.\n");
+            IS_DEBUG_LOG("[Stop] worker thread.\n");
         }
 
 
         //#define IS_DEBUG_SHOW
         CameraFrameReader::FrameDesc CameraController::fetchFrame() 
         {
-            using byte = unsigned char;
+        #ifdef IS_DEBUG_FLAG
+            std::string datetime = is::common::get_datetime();
 
-        #ifdef IS_DEBUG_SHOW
-            // 時間取得
-            char timeString[256];
-            std::memset((void *)&timeString, '\0', sizeof(timeString));
-            time_t theTime = time(nullptr);
-            struct tm *stm = localtime(&theTime);
-            if (theTime == -1 || stm == nullptr)
-            {
-                std::snprintf(timeString, 256, "Unknown");
-            }
-            else
-            {
-                strftime(timeString, 256, "%Y-%m-%d %H:%M", stm);
-            }
-
-            IS_DEBUG_STREAM("Fetch datetime: %s\n", timeString);
+            IS_DEBUG_LOG("Fetch datetime: %s\n", datetime.c_str());
         #endif
 
             if (frameReader_) 
@@ -188,7 +170,7 @@ namespace is
             }
             else 
             {
-                return std::make_tuple(std::vector<byte>(), 0.0);
+                return std::make_tuple(std::vector<ubyte>(), 0.0);
             }
         }
 

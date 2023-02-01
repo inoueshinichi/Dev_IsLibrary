@@ -1,8 +1,13 @@
-#include <IsComputerVision/camera/general/usb_camera_frame_reader.hpp>
+#include <IsComputerVision/camera/usb_camera_frame_reader.hpp>
 
-#include <IsCommon/IsCommon.hpp>
-
-
+/* OpenCV Lib Config for Windows */
+#ifdef WIN32
+#ifdef _DEBUG
+#pragma comment(lib, "opencv_world460d.lib")
+#else
+#pragma comment(lib, "opencv_world460.lib")
+#endif
+#endif
 
 namespace is 
 {
@@ -19,8 +24,8 @@ namespace is
 
         UsbCameraFrameReader::~UsbCameraFrameReader() 
         {
-            release();
-            //IS_DEBUG_STREAM("Dtor of UsbCameraFrameReader\n");
+            CameraFrameReader::release();
+            IS_DEBUG_LOG("Dtor of UsbCameraFrameReader\n");
         }
 
 
@@ -31,31 +36,32 @@ namespace is
         {
             if (isInitialized_) 
             {
-                IS_DEBUG_STREAM("Already initialized.\n");
+                IS_DEBUG_LOG("Already initialized.\n");
                 return false;
             }
 
-            if (getDeviceId() < 0) 
+            if (CameraFrameReader::getDeviceId() < 0) 
             {
-                IS_DEBUG_STREAM("Please set device id.\n");
+                IS_DEBUG_LOG("Please set device id.\n");
                 return false;
             }
 
-            IS_DEBUG_STREAM("[Enter] >>> Initialize\n");
-            IS_DEBUG_STREAM("Device Id: %d\n", getDeviceId());
-        
-            capPtr_ = new ::cv::VideoCapture(getDeviceId());//, cv::CAP_GSTREAMER); // cv::CAP_V4L2 cv::CAP_GSTREAMER
+            IS_DEBUG_LOG("[Enter] >>> Initialize\n");
+            IS_DEBUG_LOG("Device Id: %d\n", CameraFrameReader::getDeviceId());
+
+            capPtr_ = new ::cv::VideoCapture(CameraFrameReader::getDeviceId()); //, cv::CAP_GSTREAMER); // cv::CAP_V4L2 cv::CAP_GSTREAMER
+            cvFramePtr_ = new ::cv::Mat();
             
             if (!capPtr_->isOpened()) 
             {
-                IS_DEBUG_STREAM("[Error] Can not open cv::VideoCapture.\n");
-                IS_DEBUG_STREAM("[Exit] <<< Initialize\n");
-                delete capPtr_;
-                capPtr_ = nullptr;
+                IS_DEBUG_LOG("[Error] Can not open cv::VideoCapture.\n");
+                IS_DEBUG_LOG("[Exit] <<< Initialize\n");
+                delete capPtr_; capPtr_ = nullptr;
+                delete cvFramePtr_; cvFramePtr_ = nullptr;
                 return false;
             }
 
-            IS_DEBUG_STREAM("Success to initialize usb camera with device id: %d\n", getDeviceId());
+            IS_DEBUG_LOG("Success to initialize usb camera with device id: %d\n", CameraFrameReader::getDeviceId());
 
             // clangだとなぜかgetBackendName()関数が未定義.
             // std::string backApiStr = capPtr_->getBackendName();
@@ -71,7 +77,7 @@ namespace is
             auto width = capPtr_->get(::cv::CAP_PROP_FRAME_WIDTH);
             auto height = capPtr_->get(::cv::CAP_PROP_FRAME_HEIGHT);
             auto fps = capPtr_->get(::cv::CAP_PROP_FPS);
-            IS_DEBUG_STREAM("Fps: %f, Width: %d, Height: %d\n", fps, (int)width, (int)height);
+            IS_DEBUG_LOG("Fps: %f, Width: %d, Height: %d\n", fps, (int)width, (int)height);
 
             // capPtr_->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('H', '2', '6', '4'));
             // capPtr_->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
@@ -80,15 +86,16 @@ namespace is
             for (int i = 0; i < 4; ++i) {
                 forcc[i] = (char)(symbol >> 8 * i) & 0xff;
             }
-            IS_DEBUG_STREAM("FourCC: %c%c%c%c\n", forcc[0], forcc[1], forcc[2], forcc[3]);
+            IS_DEBUG_LOG("FourCC: %c%c%c%c\n", forcc[0], forcc[1], forcc[2], forcc[3]);
 
-            if (capPtr_->read(cvFrame)) {
-                width_ = cvFrame.cols;
-                height_ = cvFrame.rows;
-                channels_ = cvFrame.channels();
-                memSizePerLine_ = cvFrame.step;
+            if (capPtr_->read(*cvFramePtr_))
+            {
+                width_ = cvFramePtr_->cols;
+                height_ = cvFramePtr_->rows;
+                channels_ = cvFramePtr_->channels();
+                memSizePerLine_ = cvFramePtr_->step;
                 memDataSize_ = height_ * memSizePerLine_;
-                IS_DEBUG_STREAM("Retrieve frame: (H, W, C) = (%d, %d, %d)\n", height_, width_, channels_);
+                IS_DEBUG_LOG("Retrieve frame: (H, W, C) = (%d, %d, %d)\n", height_, width_, channels_);
 
                 // shape, strides, ndim
                 shape_ = { height_, width_, channels_ };
@@ -99,21 +106,21 @@ namespace is
                 }
                 
                 // Frame画像のメモリ確保
-                framePtr_ = (byte *)std::malloc(memDataSize_);
+                framePtr_ = (ubyte *)std::malloc(memDataSize_);
                 std::memset(framePtr_, 0, memDataSize_);
-                IS_DEBUG_STREAM("Malloc framePtr_. Address: %p. Bytesize: %ld\n", 
-                                (void *)framePtr_, memDataSize_);
+                IS_DEBUG_LOG("Malloc framePtr_. Address: %p. Bytesize: %ld\n",
+                             (void *)framePtr_, memDataSize_);
             }
             else {
-                IS_DEBUG_STREAM("[Error] Can not read frame.\n");
-                IS_DEBUG_STREAM("[Exit] <<< Initialize\n");
+                IS_DEBUG_LOG("[Error] Can not read frame.\n");
+                IS_DEBUG_LOG("[Exit] <<< Initialize\n");
                 delete capPtr_; capPtr_ = nullptr;
                 return false;
             }
 
             isInitialized_ = true; // 初期化完了フラグ
 
-            IS_DEBUG_STREAM("[Exit] <<< Initialize\n");
+            IS_DEBUG_LOG("[Exit] <<< Initialize\n");
             return true;
         }
 
@@ -124,13 +131,14 @@ namespace is
 
         void UsbCameraFrameReader::releaseImpl() {
             if (isInitialized_) {
-                IS_DEBUG_STREAM("[Enter] >>> Release\n");
+                IS_DEBUG_LOG("[Enter] >>> Release\n");
                 capPtr_->release(); // OpenCV release
                 delete capPtr_; capPtr_ = nullptr;
+                delete cvFramePtr_; cvFramePtr_ = nullptr;
                 isInitialized_ = false;
                 std::free(framePtr_); framePtr_ = nullptr;
-                IS_DEBUG_STREAM("Success to release.\n");
-                IS_DEBUG_STREAM("[Exit] <<< Release\n");
+                IS_DEBUG_LOG("Success to release.\n");
+                IS_DEBUG_LOG("[Exit] <<< Release\n");
             }
         }
 
@@ -138,7 +146,7 @@ namespace is
         bool UsbCameraFrameReader::captureImpl() {
 
             // auto start = high_resolution_clock::now();
-            bool bret = capPtr_->read(cvFrame);
+            bool bret = capPtr_->read(*cvFramePtr_);
             // auto end = high_resolution_clock::now();
             // auto msec = duration_cast<milliseconds>(end - start).count();
             // std::printf("Read elapsed time: %ld[ms]\n", msec);
@@ -146,25 +154,26 @@ namespace is
             if (bret) {
 
                 if (channels_ == 3) {
-                    ::cv::cvtColor(cvFrame, cvFrame, ::cv::COLOR_BGR2RGB);
+                    ::cv::cvtColor(*cvFramePtr_, *cvFramePtr_, ::cv::COLOR_BGR2RGB);
                 }
                 else if (channels_ == 4) {
-                    ::cv::cvtColor(cvFrame, cvFrame, ::cv::COLOR_BGRA2RGBA);
+                    ::cv::cvtColor(*cvFramePtr_, *cvFramePtr_, ::cv::COLOR_BGRA2RGBA);
                 }
 
-                if (cvFrame.isContinuous()) {
+                if (cvFramePtr_->isContinuous())
+                {
                     // 連続メモリ
 
                     // deepcopy
-                    std::memcpy(framePtr_, cvFrame.data, memDataSize_);
+                    std::memcpy(framePtr_, cvFramePtr_->data, memDataSize_);
                 }
                 else {
                     // 非連続メモリ(各行間にギャップがある)
                     size_t memLine = 0;
                     for (int y = 0; y < height_; ++y) {
                         // 行単位でdeepcopy
-                        std::memcpy((void *)&framePtr_[memLine], 
-                            (void *)cvFrame.row(y).data, memSizePerLine_);
+                        std::memcpy((void *)&framePtr_[memLine],
+                                    (void *)cvFramePtr_->row(y).data, memSizePerLine_);
                         memLine += memSizePerLine_;
                     }
                 }

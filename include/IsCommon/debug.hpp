@@ -10,9 +10,16 @@
  */
 #pragma once
 
-// debug log
-#if 1
+// Log
+#if (0)
+    #define IS_DEBUG_FLAG 0
+#else
     #include <cstdio>
+    #define IS_DEBUG_FLAG 1
+#endif
+
+// debug log
+#if (IS_DEBUG_FLAG)
     #if __cplusplus <= 201703L // <= C++17
         #define IS_DEBUG_LOG(format, ...) std::printf(format, ##__VA_ARGS__)
     #else // >= C++20

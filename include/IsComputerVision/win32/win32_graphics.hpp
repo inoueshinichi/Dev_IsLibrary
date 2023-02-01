@@ -21,14 +21,14 @@ namespace is
             BITMAPINFO *bmi_info_;
 
             BYTE *bmp_;
-            int32_t width_;
-            int32_t height_;
+            int width_;
+            int height_;
             size_t mem_width_;
-            int32_t channels_;
+            int channels_;
             size_t datasize_;
 
             void clear();
-            void setup(int32_t width, int32_t height, int32_t channels);
+            void setup(int width, int height, int channels);
             void dump() const;
 
         public:
@@ -44,11 +44,11 @@ namespace is
             int channels() const { return channels_; }
             size_t datasize() const { return datasize_; }
             void set_data(BYTE *data, int width, int height, int channels, int insert_color = -1);
-            BOOL get_data(BYTE *data, int extract_color = -1);
+            bool get_data(BYTE *data, int extract_color = -1);
             void view_on_window(HDC hdc, const RECT &rect, int mode = COLORONCOLOR);
 
-            BOOL save(const CString &filename, BOOL is_dump);
-            BOOL load(const CString &filename, int &width, int &height, int &channels, BOOL is_dump);
+            bool save(const CString &filename, bool is_dump);
+            bool load(const CString &filename, int &width, int &height, int &channels, bool is_dump);
         };
     } // namespace imgproc
 }

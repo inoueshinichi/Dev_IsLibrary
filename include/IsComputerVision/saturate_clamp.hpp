@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <IsCommon/IsCommon.hpp>
+
 #include <cmath> // std::fmax, std::fmin, std::roundf, std::round etc..
 #include <algorithm> // std::max, std::min
 #include <limits.h>
@@ -19,23 +21,15 @@ namespace is
 {
     namespace cv
     {
-        using uchar = unsigned char;
-        using ushort = unsigned short;
-        using uint = unsigned int;
-        using ulong = unsigned long;
-        using longlong = long long;
-        using ulonglong = unsigned long long;
-        using longdouble = long double;
-
         // プライマリーテンプレート------------------------------------
 
         /*1byte*/
-        // uchar
+        // ubyte
         template <typename T>
-        static inline T saturate_clamp(uchar v) { return T(v); }
-        // char
+        static inline T saturate_clamp(ubyte v) { return T(v); }
+        // byte
         template <typename T>
-        static inline T saturate_clamp(char v) { return T(v); }
+        static inline T saturate_clamp(byte v) { return T(v); }
 
         /*2byte*/
         // ushort
@@ -83,113 +77,119 @@ namespace is
 
         // 完全特殊化テンプレート------------------------------------
 
-        // ----- uchar -----
-        // uchar -> uchar
+        // ----- ubyte -----
+        // ubyte -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(uchar v) { return v; }
-        // char -> uchar
+        inline ubyte saturate_clamp<ubyte>(ubyte v) { return v; }
+        // byte -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(char v) { return (uchar)(std::max)((int)v, 0); }
-        // ushort -> uchar
+        inline ubyte saturate_clamp<ubyte>(byte v) { return (ubyte)(std::max)((int)v, 0); }
+        // ushort -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(ushort v) { return (uchar)((std::max)((uchar)v, (uchar)UCHAR_MAX)); }
-        // int -> uchar
+        inline ubyte saturate_clamp<ubyte>(ushort v) { return (ubyte)((std::max)((ubyte)v, (ubyte)UCHAR_MAX)); }
+        // int -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(int v) { return (uchar)((uint)v <= (uint)UCHAR_MAX ? v : v > 0 ? UCHAR_MAX : 0); }
-        // short -> uchar
+        inline ubyte saturate_clamp<ubyte>(int v) { return (ubyte)((uint)v <= (uint)UCHAR_MAX ? v : v > 0 ? UCHAR_MAX
+                                                                                                          : 0); }
+        // short -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(short v) { return saturate_clamp<uchar>((int)v); }
-        // uint -> uchar
+        inline ubyte saturate_clamp<ubyte>(short v) { return saturate_clamp<ubyte>((int)v); }
+        // uint -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(uint v) { return (uchar)((std::min)(v, (uint)UCHAR_MAX)); }
-        // ulong -> uchar
+        inline ubyte saturate_clamp<ubyte>(uint v) { return (ubyte)((std::min)(v, (uint)UCHAR_MAX)); }
+        // ulong -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(ulong v) { return saturate_clamp<uchar>((uint)v); }
-        // long -> uchar
+        inline ubyte saturate_clamp<ubyte>(ulong v) { return saturate_clamp<ubyte>((uint)v); }
+        // long -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(long v) { return saturate_clamp<uchar>((int)v); }
-        // ulonglong -> uchar
+        inline ubyte saturate_clamp<ubyte>(long v) { return saturate_clamp<ubyte>((int)v); }
+        // ulonglong -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(ulonglong v) { return (uchar)((std::min)(v, (ulonglong)UCHAR_MAX)); }
-        // longlong -> uchar
+        inline ubyte saturate_clamp<ubyte>(ulonglong v) { return (ubyte)((std::min)(v, (ulonglong)UCHAR_MAX)); }
+        // longlong -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(longlong v) { return (uchar)((ulonglong)v <= (ulonglong)UCHAR_MAX ? v : v > 0 ? UCHAR_MAX : 0); }
-        // float -> uchar
+        inline ubyte saturate_clamp<ubyte>(longlong v) { return (ubyte)((ulonglong)v <= (ulonglong)UCHAR_MAX ? v : v > 0 ? UCHAR_MAX
+                                                                                                                         : 0); }
+        // float -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(float v) { 
+        inline ubyte saturate_clamp<ubyte>(float v) 
+        { 
             int iv = (int)std::roundf(v);
-            return saturate_clamp<uchar>(iv);
+            return saturate_clamp<ubyte>(iv);
         }
-        // double -> uchar
+        // double -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(double v) {
+        inline ubyte saturate_clamp<ubyte>(double v)
+        {
             int iv = (int)std::round(v);
-            return saturate_clamp<uchar>(iv);
+            return saturate_clamp<ubyte>(iv);
         }
-        // longdouble -> uchar
+        // longdouble -> ubyte
         template <>
-        inline uchar saturate_clamp<uchar>(longdouble v) {
-            return saturate_clamp<uchar>((double)v);
+        inline ubyte saturate_clamp<ubyte>(longdouble v) {
+            return saturate_clamp<ubyte>((double)v);
         }
 
 
-        // ----- char -----
-        // char -> char
+        // ----- byte -----
+        // byte -> byte
         template <>
-        inline char saturate_clamp<char>(char v) { return v; }
-        // uchar -> char
+        inline byte saturate_clamp<byte>(byte v) { return v; }
+        // ubyte -> byte
         template <>
-        inline char saturate_clamp<char>(uchar v) { return (char)((std::min)((int)v, SCHAR_MAX)); }
-        // ushort -> char
+        inline byte saturate_clamp<byte>(ubyte v) { return (byte)((std::min)((int)v, SCHAR_MAX)); }
+        // ushort -> byte
         template <>
-        inline char saturate_clamp<char>(ushort v) { return (char)((std::min)((uint)v, (uint)SCHAR_MAX)); }
-        // int -> char
+        inline byte saturate_clamp<byte>(ushort v) { return (byte)((std::min)((uint)v, (uint)SCHAR_MAX)); }
+        // int -> byte
         template <>
-        inline char saturate_clamp<char>(int v) { return (char)((uint)(v - SCHAR_MIN) <= (uint)UCHAR_MAX ? v : v > 0 ? SCHAR_MAX : SCHAR_MIN); }
-        // short -> char
+        inline byte saturate_clamp<byte>(int v) { return (byte)((uint)(v - SCHAR_MIN) <= (uint)UCHAR_MAX ? v : v > 0 ? SCHAR_MAX
+                                                                                                                     : SCHAR_MIN); }
+        // short -> byte
         template <>
-        inline char saturate_clamp<char>(short v) { return saturate_clamp<char>((int)v); }
-        // uint -> char
+        inline byte saturate_clamp<byte>(short v) { return saturate_clamp<byte>((int)v); }
+        // uint -> byte
         template <>
-        inline char saturate_clamp<char>(uint v) { return (char)((std::min)(v, (uint)SCHAR_MAX)); }
-        // long -> char
+        inline byte saturate_clamp<byte>(uint v) { return (byte)((std::min)(v, (uint)SCHAR_MAX)); }
+        // long -> byte
         template <>
-        inline char saturate_clamp<char>(long v) { return saturate_clamp<char>((int)v); }
-        // ulong -> char
+        inline byte saturate_clamp<byte>(long v) { return saturate_clamp<byte>((int)v); }
+        // ulong -> byte
         template <>
-        inline char saturate_clamp<char>(ulong v) { return saturate_clamp<char>((uint)v); }
-        // longlong -> char
+        inline byte saturate_clamp<byte>(ulong v) { return saturate_clamp<byte>((uint)v); }
+        // longlong -> byte
         template <>
-        inline char saturate_clamp<char>(longlong v) { return (char)((ulonglong)(v - SCHAR_MIN) <= (ulonglong)UCHAR_MAX ? v : v > 0 ? SCHAR_MAX : SCHAR_MIN); }
-        // ulonglong -> char
+        inline byte saturate_clamp<byte>(longlong v) { return (byte)((ulonglong)(v - SCHAR_MIN) <= (ulonglong)UCHAR_MAX ? v : v > 0 ? SCHAR_MAX
+                                                                                                                                    : SCHAR_MIN); }
+        // ulonglong -> byte
         template <>
-        inline char saturate_clamp<char>(ulonglong v) { return (char)((std::min)(v, (ulonglong)SCHAR_MAX)); }
-        // float -> char
+        inline byte saturate_clamp<byte>(ulonglong v) { return (byte)((std::min)(v, (ulonglong)SCHAR_MAX)); }
+        // float -> byte
         template <>
-        inline char saturate_clamp<char>(float v) {
+        inline byte saturate_clamp<byte>(float v)
+        {
             int iv = (int)std::roundf(v);
-            return saturate_clamp<char>(iv);
+            return saturate_clamp<byte>(iv);
         }
-        // double -> char
+        // double -> byte
         template <>
-        inline char saturate_clamp<char>(double v) {
+        inline byte saturate_clamp<byte>(double v) {
             int iv = (int)std::round(v);
-            return saturate_clamp<char>(iv);
+            return saturate_clamp<byte>(iv);
         }
-        // longdouble -> char
+        // longdouble -> byte
         template <>
-        inline char saturate_clamp<char>(longdouble v) {
-            return saturate_clamp<char>((double)v);
+        inline byte saturate_clamp<byte>(longdouble v) {
+            return saturate_clamp<byte>((double)v);
         }
-
 
         // ----- ushort -----
-        // char -> ushort
+        // byte -> ushort
         template <>
-        inline ushort saturate_clamp<ushort>(char v) { return (ushort)((std::max)((int)v, 0)); }
-        // uchar -> ushort
+        inline ushort saturate_clamp<ushort>(byte v) { return (ushort)((std::max)((int)v, 0)); }
+        // ubyte -> ushort
         template <>
-        inline ushort saturate_clamp<ushort>(uchar v) { return (ushort)(v); }
+        inline ushort saturate_clamp<ushort>(ubyte v) { return (ushort)(v); }
         // short -> ushort
         template <>
         inline ushort saturate_clamp<ushort>(short v) { return (ushort)((std::max)((int)v, 0)); }
@@ -232,14 +232,13 @@ namespace is
             return saturate_clamp<ushort>((double)v);
         }
 
-
         // ----- short -----
-        // char -> short
+        // byte -> short
         template <>
-        inline short saturate_clamp<short>(char v) { return (short)v; }
-        // uchar -> short
+        inline short saturate_clamp<short>(byte v) { return (short)v; }
+        // ubyte -> short
         template <>
-        inline short saturate_clamp<short>(uchar v) { return (short)v; }
+        inline short saturate_clamp<short>(ubyte v) { return (short)v; }
         // short -> short
         template <>
         inline short saturate_clamp<short>(short v) { return v; }
@@ -282,14 +281,13 @@ namespace is
             return saturate_clamp<short>((double)v);
         }
 
-
         // ----- uint -----
-        // char -> uint
+        // byte -> uint
         template <>
-        inline uint saturate_clamp<uint>(char v) { return (uint)((std::max)(v, (char)0)); }
-        // uchar -> uint
+        inline uint saturate_clamp<uint>(byte v) { return (uint)((std::max)(v, (byte)0)); }
+        // ubyte -> uint
         template <>
-        inline uint saturate_clamp<uint>(uchar v) { return (uint)v; }
+        inline uint saturate_clamp<uint>(ubyte v) { return (uint)v; }
         // short -> uint
         template <>
         inline uint saturate_clamp<uint>(short v) { return (uint)((std::max)(v, (short)0)); }
@@ -332,14 +330,13 @@ namespace is
             return saturate_clamp<uint>((double)v);
         }
 
-
         // ----- int -----
-        // char -> int
+        // byte -> int
         template <>
-        inline int saturate_clamp<int>(char v) { return (int)v; }
-        // uchar -> int
+        inline int saturate_clamp<int>(byte v) { return (int)v; }
+        // ubyte -> int
         template <>
-        inline int saturate_clamp<int>(uchar v) { return (int)v; }
+        inline int saturate_clamp<int>(ubyte v) { return (int)v; }
         // short -> int
         template <>
         inline int saturate_clamp<int>(short v) { return (int)v; }
@@ -382,14 +379,13 @@ namespace is
             return saturate_clamp<int>((double)v);
         }
 
-
         // ----- ulong -----
-        // char -> ulong
+        // byte -> ulong
         template <>
-        inline ulong saturate_clamp<ulong>(char v) { return (ulong)saturate_clamp<uint>(v); }
-        // uchar -> ulong
+        inline ulong saturate_clamp<ulong>(byte v) { return (ulong)saturate_clamp<uint>(v); }
+        // ubyte -> ulong
         template <>
-        inline ulong saturate_clamp<ulong>(uchar v) { return (ulong)saturate_clamp<uint>(v); }
+        inline ulong saturate_clamp<ulong>(ubyte v) { return (ulong)saturate_clamp<uint>(v); }
         // short -> ulong
         template <>
         inline ulong saturate_clamp<ulong>(short v) { return (ulong)saturate_clamp<uint>(v); }
@@ -421,14 +417,13 @@ namespace is
         template <>
         inline ulong saturate_clamp<ulong>(longdouble v) { return saturate_clamp<ulong>((double)v); }
 
-
         // ----- long -----
-        // char -> long
+        // byte -> long
         template <>
-        inline long saturate_clamp<long>(char v) { return (long)saturate_clamp<int>(v); }
-        // uchar -> long
+        inline long saturate_clamp<long>(byte v) { return (long)saturate_clamp<int>(v); }
+        // ubyte -> long
         template <>
-        inline long saturate_clamp<long>(uchar v) { return (long)saturate_clamp<int>(v); }
+        inline long saturate_clamp<long>(ubyte v) { return (long)saturate_clamp<int>(v); }
         // short -> long
         template <>
         inline long saturate_clamp<long>(short v) { return (long)saturate_clamp<int>(v); }
@@ -460,14 +455,13 @@ namespace is
         template <>
         inline long saturate_clamp<long>(double v) { return (long)saturate_clamp<int>(v); }
 
-
         // ----- ulonglong -----
-        // char -> ulonglong
+        // byte -> ulonglong
         template <>
-        inline ulonglong saturate_clamp<ulonglong>(char v) { return (ulonglong)((std::max)(v, (char)v)); }
-        // uchar -> ulonglong
+        inline ulonglong saturate_clamp<ulonglong>(byte v) { return (ulonglong)((std::max)(v, (byte)v)); }
+        // ubyte -> ulonglong
         template <>
-        inline ulonglong saturate_clamp<ulonglong>(uchar v) { return (ulonglong)v; }
+        inline ulonglong saturate_clamp<ulonglong>(ubyte v) { return (ulonglong)v; }
         // short -> ulonglong
         template <>
         inline ulonglong saturate_clamp<ulonglong>(short v) { return (ulonglong)((std::max)(v, (short)0)); }
@@ -510,14 +504,13 @@ namespace is
             return saturate_clamp<ulonglong>((double)v);
         }
 
-
         // ----- longlong -----
-        // char -> longlong
+        // byte -> longlong
         template <>
-        inline longlong saturate_clamp<longlong>(char v) { return (longlong)v; }
-        // uchar -> longlong
+        inline longlong saturate_clamp<longlong>(byte v) { return (longlong)v; }
+        // ubyte -> longlong
         template <>
-        inline longlong saturate_clamp<longlong>(uchar v) { return (longlong)v; }
+        inline longlong saturate_clamp<longlong>(ubyte v) { return (longlong)v; }
         // short -> longlong
         template <>
         inline longlong saturate_clamp<longlong>(short v) { return (longlong)v; }
@@ -539,6 +532,7 @@ namespace is
         // longlong -> longlong
         template <>
         inline longlong saturate_clamp<longlong>(longlong v) { return v; }
+
     #ifdef WIN32
         // ulonglong -> longlong
         template <>
@@ -558,14 +552,13 @@ namespace is
         template <>
         inline longlong saturate_clamp<longlong>(longdouble v) { return saturate_clamp<longlong>((double)v); }
 
-
         // ----- float -----
-        // char -> float
+        // byte -> float
         template <>
-        inline float saturate_clamp<float>(char v) { return (float)v; }
-        // uchar -> float
+        inline float saturate_clamp<float>(byte v) { return (float)v; }
+        // ubyte -> float
         template <>
-        inline float saturate_clamp<float>(uchar v) { return (float)v; }
+        inline float saturate_clamp<float>(ubyte v) { return (float)v; }
         // short -> float
         template <>
         inline float saturate_clamp<float>(short v) { return (float)v; }
@@ -597,14 +590,13 @@ namespace is
         template <>
         inline float saturate_clamp<float>(double v) { return (float)v; }
 
-
         // ----- double -----
-        // char -> double
+        // byte -> double
         template <>
-        inline double saturate_clamp<double>(char v) { return (double)v; }
-        // uchar -> double
+        inline double saturate_clamp<double>(byte v) { return (double)v; }
+        // ubyte -> double
         template <>
-        inline double saturate_clamp<double>(uchar v) { return (double)v; }
+        inline double saturate_clamp<double>(ubyte v) { return (double)v; }
         // short -> double
         template <>
         inline double saturate_clamp<double>(short v) { return (double)v; }
@@ -639,14 +631,13 @@ namespace is
         template <>
         inline double saturate_clamp<double>(longdouble v) { return (double)v; }
 
-
         // ----- longdouble -----
-        // char -> longdouble
+        // byte -> longdouble
         template <>
-        inline longdouble saturate_clamp<longdouble>(char v) { return (longdouble)v; }
-        // uchar -> longdouble
+        inline longdouble saturate_clamp<longdouble>(byte v) { return (longdouble)v; }
+        // ubyte -> longdouble
         template <>
-        inline longdouble saturate_clamp<longdouble>(uchar v) { return (longdouble)v; }
+        inline longdouble saturate_clamp<longdouble>(ubyte v) { return (longdouble)v; }
         // short -> longdouble
         template <>
         inline longdouble saturate_clamp<longdouble>(short v) { return (longdouble)v; }

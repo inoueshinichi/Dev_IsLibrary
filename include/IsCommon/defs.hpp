@@ -14,6 +14,11 @@
     #define __func__ __FUNCTION__
 #endif
 
+#ifdef _MSC_VER
+    // https://qiita.com/Chironian/items/462a3bdf271d5f0b00b6#%EF%BC%92%EF%BC%93c4251%E8%AD%A6%E5%91%8A%E3%81%8C%E5%87%BA%E3%82%8B
+    #pragma warning(disable : 4251)
+#endif
+
 // dll/lib
 #if defined(_MSC_VER) && !defined(__CUDACC__)
     #if defined(IsCommon_EXPORTS) || defined(IsCommon_dbg_EXPORTS)
@@ -46,19 +51,31 @@ private:                                               \
     #define IS_INVOKE_RESULT_TYPE(Func, Args) typename std::invoke_result<Func, Args...>::type
 #endif
 
+// C++11 gives alignas as standard
+// http://en.cppreference.com/w/cpp/language/alignas
+#define IS_ALIGN(N) alignas(N)
+
+// Memory
+#include <cstring>
+#define IS_ZERO_MEMORY(ptr, bytesize) std::memset((void *)ptr, 0, bytesize)
 
 // プリミティブ型のエイリアス
+using uchar = unsigned char;
 using byte = char;
 using ubyte = unsigned char;
+using ushort = unsigned short;
+using ulong = unsigned long;
+using longlong = long long;
+using ulonglong = unsigned long long;
+
 using int16 = short;
 using uint16 = unsigned short;
+
+using uint = unsigned int;
+
 using int32 = int;
 using uint32 = unsigned int;
+using int64 = long long;
+using uint64 = unsigned long long;
 
-#if defined(_WIN32)
-    using int64 = long long;
-    using uint64 = unsigned long long;
-#else
-    using int64 = long;
-    using uint64 = unsigned long;
-#endif
+using longdouble = long double;

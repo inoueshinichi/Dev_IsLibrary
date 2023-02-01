@@ -2,20 +2,6 @@
 
 #include <IsComputerVision/IsComputerVision.hpp>
 
-#include <deque>
-#include <tuple>
-#include <vector>
-#include <map>
-#include <future>
-#include <mutex>
-#include <functional>
-#include <stdexcept> 
-#include <exception> // current_exception/rethrow_exception
-#include <chrono>
-using namespace std::chrono;
-#include <memory>
-
-
 namespace is 
 {
     namespace cv 
@@ -28,21 +14,17 @@ namespace is
         using std::enable_shared_from_this;
 
         /**
-         * @brief カメラフレーム読み取り基底クラス
-         * 
+         * @brief カメラフレーム読み取りの抽象インターフェースクラス
          */
-        class IS_CV_API CameraFrameReader 
-            : public enable_shared_from_this<CameraFrameReader> 
+        class IS_CV_API CameraFrameReader : public enable_shared_from_this<CameraFrameReader>
         {
         public:
-            using byte = unsigned char;
-            using FrameDesc = tuple<vector<byte>, float>; // Image, Fps
+            using FrameDesc = tuple<vector<ubyte>, float>; // Image, Fps
             using Shape_t = vector<int>;
 
         protected:
-
             // 画像
-            byte *framePtr_ {nullptr}; // (H, W, C)
+            ubyte *framePtr_ {nullptr}; // (H, W, C)
             int width_;
             int height_;
             int channels_;
@@ -60,37 +42,43 @@ namespace is
             int deviceId_;
             int delay_; // ms
             float fps_;
+            std::chrono::high_resolution_clock::time_point ticks_;
 
-        private:
-            void spin(const high_resolution_clock::time_point& tp_base);
+        private : 
+            void spin();
 
         public:
+            
+
             CameraFrameReader();
-            virtual ~CameraFrameReader();
+            virtual ~CameraFrameReader() {}
 
-            int width() const;
-            int height() const;
-            int channels() const;
-            size_t memSizePerLine() const;
-            size_t memDataSize() const;
+            virtual std::string getClassName() const { "CameraFrameReader"; }
 
-            vector<int> shape() const;
-            vector<int> strides() const;
-            int ndim() const;
+            int width() const { return width_; }
+            int height() const  { return height_; }
+            int channels() const  { return channels_; }
+            size_t memSizePerLine() const  { return memSizePerLine_; }
+            size_t memDataSize() const  { return memDataSize_; }
 
-            bool isRunning() const;
+            Shape_t shape() const { return shape_; }
+            Shape_t strides() const { return strides_; }
+            int ndim() const { return ndim_; }
 
-            void setDeviceId(int deviceId);
-            int  getDeviceId() const;
-            void setDelay(int delay);
-            int  getDelay() const;
-            void stop();
+            bool isRunning() const  { return isRunning_; }
+
+            void setDeviceId(int deviceId) { deviceId_ = deviceId; }
+            int getDeviceId() const  { return deviceId_; }
+
+            void setDelay(int delay) { delay_ = delay; }
+            int getDelay() const  { return delay_; }
+
+            void stop() { isRunning_ = false; }
             void start(promise<int> result); // フレーム読み込みループ
             function<void(promise<int>)> wrapedStart();
 
             FrameDesc retrieveFrame() const;
 
-            // Interface
             bool initialize();
             void release();
             bool capture();
