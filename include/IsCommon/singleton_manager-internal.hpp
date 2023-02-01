@@ -12,56 +12,8 @@
 #pragma once
 
 #include <IsCommon/singleton_manager.hpp>
+#include <IsCommon/rtti.hpp>
 
-#include <typeinfo>
-#include <iostream>
-#include <string>
-
-#if defined(_MSC_VER)
-    #if !defined(_DEBUG) || defined(NDEBUG)
-        #define IS_CHECK_SINGLETON(new_or_delete, singleton)
-    #else
-        #define IS_CHECK_SINGLETON(new_or_delete, singleton)                            \
-            std::cout << #new_or_delete << " a singleton `" << typeid(singleton).name() \
-                    << "`" << std::endl
-#endif
-
-#else
-    // 以下の条件が正しいか疑問 Shinichi Inoue 21/2/5
-    #if !defined(NDEBUG)
-        #define IS_CHECK_SINGLETON(new_or_delete, singleton)
-    #else
-        // UNIX系だとlibstdc++に含まれる.
-        // Windowsはvcruntime14X.dllかな...
-        #if __has_include(<cxxabi.h>)
-            #include <cxxabi.h>
-            #define IS_CHECK_SINGLETON(new_or_delete, singleton)                          \
-                std::string singleton_name;                                               \
-                const std::type_info &type_id = typeid(singleton); /* RTTI */             \
-                int stat{-1};                                                             \
-                char *name = abi::__cxa_demangle(type_id.name(), 0, 0, &stat);            \
-                if (name != nullptr)                                                      \
-                {                                                                         \
-                    if (stat == 0) /* success: stat == 0 */                               \
-                    {                                                                     \
-                        singleton_name = name;                                            \
-                        std::cout << #new_or_delete << " a singleton `" << singleton_name \
-                                  << "`" << std::endl;                                    \
-                        ::free(name);                                                     \
-                    }                                                                     \
-                }                                                                         \
-                if (stat != 0)                                                            \
-                {                                                                         \
-                    std::cout << #new_or_delete << " a singleton `"                       \
-                              << typeid(SINGLETON).name() << "`" << std::endl;            \
-                }
-        #else
-            #define IS_CHECK_SINGLETON(new_or_delete, singleton)      \
-                std::cout << #new_or_delete << " a singleton `"       \
-                    << typeid(singleton).name() << "`" << std::endl
-        #endif
-    #endif
-#endif
 
 
 namespace is {
@@ -82,11 +34,11 @@ namespace is {
             }
 
             SingletonManager &self_ = SingletonManager::get_self();
-            IS_CHECK_SINGLETON(Create, SINGLETON);
             instance = new SINGLETON{};
+            IS_SINGLETON_LOG(Create, SINGLETON);
 
             auto deleter = [&]() -> void {
-                IS_CHECK_SINGLETON(Delete, SINGLETON);
+                IS_SINGLETON_LOG(Delete, SINGLETON);
                 delete instance;
                 instance = nullptr;
             };
