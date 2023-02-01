@@ -4,6 +4,7 @@
 #include <IsNdArray/exception.hpp>
 #include <IsNdArray/function.hpp>
 #include <IsNdArray/preprocessor_magic.hpp>
+#include <IsNdArray/singleton_manager-internal.hpp>
 
 #include <functional>
 #include <memory>
@@ -178,8 +179,11 @@ namespace is
             #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
                 FunctionRegistry<Function, NBLA_EXPAND(__VA_ARGS__)>& get_##NAME##Registry()                \
                 {                                                                                           \
-                    static FunctionRegistry<Function, NBLA_EXPAND(__VA_ARGS__)> registry;                   \
-                    return registry;                                                                        \
+                    struct NAME##RegistryHolder                                                             \
+                    {                                                                                       \
+                        FunctionRegistry<Function, NBLA_EXPAND(__VA_ARGS__)> instance;                      \
+                    };                                                                                      \
+                    return SingletonManager::get<NAME##RegistryHolder>()->instance;                         \
                 }                                                                                           \
                                                                                                             \
                 shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context&, NBLA_EXPAND(__VA_ARGS__)))  \
@@ -215,8 +219,11 @@ namespace is
             #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
                 FunctionRegistry<Function, ##__VA_ARGS__>& get_##NAME##Registry()                           \
                 {                                                                                           \
-                    static FunctionRegistry<Function, ##__VA_ARGS__> registry;                              \
-                    return registry;                                                                        \
+                    struct NAME##RegistryHolder                                                             \
+                    {                                                                                       \
+                        FunctionRegistry<Function, ##__VA_ARGS__> instance;                                 \
+                    };                                                                                      \
+                    return SingletonManager::get<NAME##RegistryHolder>()->instance;                         \
                 }                                                                                           \
                                                                                                             \
                 shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context&, ##__VA_ARGS__))             \
@@ -248,36 +255,37 @@ namespace is
         #define NBLA_REGISTER_FUNCTION_HEADER(NAME, ...)                                                \
             FunctionRegistry<Function, ##__VA_ARGS__>& get_##NAME##Registry();                          \
                                                                                                         \
-            shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context&, ##__VA_ARGS__));            
+            shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context&, ##__VA_ARGS__));
 
+#define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                             \
+    FunctionRegistry<Function, ##__VA_ARGS__> &get_##NAME##Registry()                        \
+    {                                                                                        \
+        struct NAME##RegistryHolder                                                          \
+        {                                                                                    \
+            FunctionRegistry<Function, ##__VA_ARGS__> instance;                              \
+        };                                                                                   \
+        return SingletonManager::get<NAME##RegistryHolder>()->instance;                      \
+    }                                                                                        \
+                                                                                             \
+    shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context &, ##__VA_ARGS__))         \
+    {                                                                                        \
+        init_cpu();                                                                          \
+        return get_##NAME##Registry().create(NBLA_ARGS(const Context &, ##__VA_ARGS__));     \
+    }
 
-        #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
-            FunctionRegistry<Function, ##__VA_ARGS__> & get_##NAME##Registry()                          \
-            {                                                                                           \
-                static FunctionRegistry<Function, ##__VA_ARGS__> registry;                              \
-                return registry;                                                                        \
-            }                                                                                           \
-                                                                                                        \
-            shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context&, ##__VA_ARGS__))             \
-            {                                                                                           \
-                init_cpu();                                                                             \
-                return get_##NAME##Registry().create(NBLA_ARGS(const Context&, ##__VA_ARGS__));         \
-            }
-
-        
         /*!
         *  This will be used inside init method.
         */
-        #define NBLA_REGISTER_FUNCTION_IMPL(BASE, CLS, BACKEND, ...)                                    \
-            {                                                                                           \
-                std::function<shared_ptr<Function>(const Context&, ##__VA_ARGS__)> func =               \
-                    [](NBLA_ARGDEFS(const Context&, ##__VA_ARGS__)) {                                   \
-                        return shared_ptr<Function>(                                                    \
-                            new CLS(NBLA_ARGS(const Context&, ##__VA_ARGS__)));                         \
-                    };                                                                                  \
-                                                                                                        \
-                using item_t = FunctionDbItem<Function, ##__VA_ARGS__>;                                 \
-                get_##BASE##Registry().add(shared_ptr<item_t>(new item_t(BACKEND, func)));              \
+#define NBLA_REGISTER_FUNCTION_IMPL(BASE, CLS, BACKEND, ...)                                  \
+            {                                                                                 \
+                std::function<shared_ptr<Function>(const Context&, ##__VA_ARGS__)> func =     \
+                    [](NBLA_ARGDEFS(const Context&, ##__VA_ARGS__)) {                         \
+                        return shared_ptr<Function>(                                          \
+                            new CLS(NBLA_ARGS(const Context&, ##__VA_ARGS__)));               \
+                    };                                                                        \
+                                                                                              \
+                using item_t = FunctionDbItem<Function, ##__VA_ARGS__>;                       \
+                get_##BASE##Registry().add(shared_ptr<item_t>(new item_t(BACKEND, func)));    \
             }
 
     #endif   
@@ -301,8 +309,11 @@ namespace is
             #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
                 FunctionRegistry<Function __VA_OPT__(,) __VA_ARGS__>& get_##NAME##Registry()                \
                 {                                                                                           \
-                    static FunctionRegistry<Function __VA_OPT__(,) __VA_ARGS__> registry;                   \
-                    return registry;                                                                        \
+                    struct NAME##RegistryHolder                                                             \
+                    {                                                                                       \
+                        FunctionRegistry<Function __VA_OPT__(, ) __VA_ARGS__> instance;                     \
+                    };                                                                                      \
+                    return SingletonManager::get<NAME##RegistryHolder>()->instance;                         \
                 }                                                                                           \
                                                                                                             \
                 shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context& __VA_OPT__(,) __VA_ARGS__))  \
@@ -341,8 +352,11 @@ namespace is
                 #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
                     FunctionRegistry<Function NBLA_EXPAND(__VA_ARGS__)>& get_##NAME##Registry()                 \
                     {                                                                                           \
-                        static FunctionRegistry<Function NBLA_EXPAND(__VA_ARGS__)> registry;                    \
-                        return registry;                                                                        \
+                        struct NAME##RegistryHolder                                                             \
+                        {                                                                                       \
+                            FunctionRegistry<Function NBLA_EXPAND(__VA_ARGS__)> instance;                       \
+                        };                                                                                      \
+                        return SingletonManager::get<NAME##RegistryHolder>()->instance;                         \
                     }                                                                                           \
                                                                                                                 \
                     shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context& NBLA_EXPAND(__VA_ARGS__)))   \
@@ -377,8 +391,11 @@ namespace is
                 #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
                     FunctionRegistry<Function , ##__VA_ARGS__>& get_##NAME##Registry()                          \
                     {                                                                                           \
-                        static FunctionRegistry<Function , ##__VA_ARGS__> registry;                             \
-                        return registry;                                                                        \
+                        struct NAME##RegistryHolder                                                             \
+                        {                                                                                       \
+                            FunctionRegistry<Function, ##__VA_ARGS__> instance;                                 \
+                        };                                                                                      \
+                        return SingletonManager::get<NAME##RegistryHolder>()->instance;                         \
                     }                                                                                           \
                                                                                                                 \
                     shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(                                            \
@@ -403,8 +420,11 @@ namespace is
         #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
             FunctionRegistry<Function __VA_OPT__(,) __VA_ARGS__>& get_##NAME##Registry()                \
             {                                                                                           \
-                static FunctionRegistry<Function __VA_OPT__(,) __VA_ARGS__> registry;                   \
-                return registry;                                                                        \
+                struct NAME##RegistryHolder                                                             \
+                {                                                                                       \
+                    FunctionRegistry<Function __VA_OPT__(, ) __VA_ARGS__> instance;                     \
+                };                                                                                      \
+                return SingletonManager::get<NAME##RegistryHolder>()->instance;                         \
             }                                                                                           \
                                                                                                         \
             shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(                                            \
