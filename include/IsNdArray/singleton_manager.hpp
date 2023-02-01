@@ -43,7 +43,7 @@ namespace is
              * @tparam SINGLETON 
              * @return int 
              */
-            template <typename SINGLETON> int get_id();
+            template <typename SINGLETON> static int get_id();
 
 
             /**
@@ -58,7 +58,7 @@ namespace is
              * 
              * @tparam SINGLETON 
              */
-            template <typename SINGLETON> void erase();
+            template <typename SINGLETON> static void erase();
 
 
             /**
@@ -87,9 +87,9 @@ namespace is
             //       呼び出す制限をかけるからprivateスコープにする(get_rmtx関数を定義すれば大丈夫かも...)
 			static SingletonManager& get_self();
 
-            // 再帰ロック可能なミューテックスを取得
+            
             // 追加 Shinichi Inoue 21/2/5
-            static std::recursive_mutex& get_rmtx();
+            static std::mutex& get_mtx();
 
             // コンストラクタ/デストラクタを非公開
             SingletonManager();

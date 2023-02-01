@@ -9,23 +9,23 @@
 
 #if defined(_MSC_VER)
     #if !defined(_DEBUG) || defined(NDEBUG)
-        #define NBLA_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)
+        #define NBLA_SINGLETON_LOG(MESSAGE, SINGLETON)
     #else
-        #define NBLA_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)                             \
-            std::cout << #NEW_OR_DELETE << " a singleton `" << typeid(SINGLETON).name()    \
+        #define NBLA_SINGLETON_LOG(MESSAGE, SINGLETON)                                       \
+            std::cout << "[" << #MESSAGE << "] a singleton `" << typeid(SINGLETON).name()    \
                         << "`" << std::endl;
     #endif
 #else
     // 以下の条件が正しいか疑問 Shinichi Inoue 21/2/5
-    #if !defined(NDEBUG)
-        #define NBLA_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)
+    #if defined(NDEBUG)
+        #define NBLA_SINGLETON_LOG(MESSAGE, SINGLETON)
     #else
         // UNIX系だとlibstdc++に含まれる.
         // Windowsは未調査.
         // Shinichi Inoue 21/2/5
         #if __has_include(<cxxabi.h>)
             #include <cxxabi.h>
-            #define NBLA_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)                         \
+            #define NBLA_SINGLETON_LOG(MESSAGE, SINGLETON)                                 \
                 std::string singleton_name;                                                \
                 const std::type_info& type_id = typeid(SINGLETON); /* RTTI */              \
                 int stat{-1};                                                              \
@@ -35,19 +35,19 @@
                     if (stat == 0) /* success: stat == 0 */                                \
                     {                                                                      \
                         singleton_name = name;                                             \
-                        std::cout << #NEW_OR_DELETE << " a singleton `" << singleton_name  \
+                        std::cout << "[" << #MESSAGE << "] a singleton `" << singleton_name\
                                 << "`" << std::endl;                                       \
                         ::free(name);                                                      \
                     }                                                                      \
                 }                                                                          \
                 if (stat != 0)                                                             \
                 {                                                                          \
-                    std::cout << #NEW_OR_DELETE << " a singleton `"                        \
+                    std::cout << "[" << #MESSAGE << "] a singleton `"                      \
                               << typeid(SINGLETON).name() << "`" << std::endl;             \
                 }
         #else
-            #define NBLA_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)                         \
-                std::cout << #NEW_OR_DELETE << " a singleton `"                            \
+            #define NBLA_SINGLETON_LOG(MESSAGE, SINGLETON)                                 \
+                std::cout << "[" << #MESSAGE << "] a singleton `"                          \
                         << typeid(SINGLETON).name() << "`" << std::endl;
         #endif
     #endif
@@ -62,12 +62,10 @@ namespace is
         {
             // 内部リンケージのstatic変数は必ずdll側の*.cppで定義すること.
             // https://qiita.com/Chironian/items/3fb61cffa2a20dbee5c2
-            // static std::mutex mtx_;
-            std::recursive_mutex& rmtx_ = SingletonManager::get_rmtx();
+            std::mutex& mtx_ = SingletonManager::get_mtx();
 
             // クリティカルセクション作成
-            // std::lock_guard<std::mutex> locker(mtx_);
-            std::lock_guard<std::recursive_mutex> locker(rmtx_);
+            std::lock_guard<std::recursive_mutex> locker(mtx_);
 
             static SINGLETON* instance {nullptr}; // 初回だけnullptrで初期化される
             if (instance)
@@ -76,12 +74,11 @@ namespace is
             }
 
             SingletonManager& self_ = SingletonManager::get_self();
-            NBLA_CHECK_SINGLETON(Creating, SINGLETON)
             instance = new SINGLETON{};
+            NBLA_SINGLETON_LOG(Create, SINGLETON)
 
             auto deleter = [&]() -> void {
-                NBLA_CHECK_SINGLETON(Deleting, SINGLETON)
-
+                NBLA_SINGLETON_LOG(Delete, SINGLETON)
                 delete instance;
                 instance = nullptr;
             };
