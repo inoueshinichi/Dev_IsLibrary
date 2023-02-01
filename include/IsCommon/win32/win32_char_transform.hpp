@@ -107,7 +107,7 @@ CStringT  // MFC CStringのテンプレート テンプレートクラス -> cha
 *************************************************************************************************************
 */
 
-#include <IsCommon/win32/win32_def.hpp>
+#include <IsCommon/win32/win32_defs.hpp>
 
 
 #include <string>

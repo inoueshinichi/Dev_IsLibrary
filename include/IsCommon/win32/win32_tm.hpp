@@ -1,4 +1,4 @@
-#include <IsCommon/win32/win32_def.hpp>
+#include <IsCommon/win32/win32_defs.hpp>
 
 namespace is
 {
