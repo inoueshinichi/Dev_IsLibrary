@@ -26,6 +26,5 @@ namespace is
         const Vector3 Vector3::ng_unit_z(0.0f, 0.0f, 1.0f);
         const Vector3 Vector3::inf(math::inf, math::inf, math::inf);
         const Vector3 Vector3::ng_inf(math::ng_inf, math::ng_inf, math::ng_inf);
-        ;
     }
 }
