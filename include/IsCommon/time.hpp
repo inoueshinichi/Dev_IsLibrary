@@ -29,7 +29,7 @@ namespace is {
             std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...); // 完全転送
             std::clock_t end = std::clock();
             std::size_t duration = (double)(end - start);
-            std::cout << IS_STR_FUNCNAME(func) << ": " << duration << "[ms]" << std::endl;
+            std::cout << __func__ << ": " << duration << "[ms]" << std::endl;
             return duration;
         };
 
@@ -38,7 +38,7 @@ namespace is {
             auto result = std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...); // 完全転送
             std::clock_t end = std::clock();
             std::size_t duration = (double)(end - start);
-            std::cout << IS_STR_FUNCNAME(func) << ": " << duration << "[ms]" << std::endl;
+            std::cout << __func__ << ": " << duration << "[ms]" << std::endl;
             return result;
         };
 
@@ -52,7 +52,7 @@ namespace is {
             auto end = std::chrono::system_clock::now();
             auto duration = end - start;
             double duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-            std::cout << IS_STR_FUNCNAME(func) << ": " << duration_ms << "[ms]" << std::endl;
+            std::cout << __func__ << ": " << duration_ms << "[ms]" << std::endl;
             return duration_ms;
         };
 
@@ -66,7 +66,7 @@ namespace is {
             auto end = std::chrono::system_clock::now();
             auto duration = end - start;
             double duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-            std::cout << IS_STR_FUNCNAME(func) << ": " << duration_ms << "[ms]" << std::endl;
+            std::cout << __func__ << ": " << duration_ms << "[ms]" << std::endl;
             return result;
         };
 
@@ -80,7 +80,7 @@ namespace is {
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = end - start;
             double duration_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-            std::cout << IS_STR_FUNCNAME(func) << ": " << duration_ns << "[ns]" << std::endl;
+            std::cout << __func__ << ": " << duration_ns << "[ns]" << std::endl;
             return duration_ns;
         };
 
@@ -94,7 +94,7 @@ namespace is {
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = end - start;
             double duration_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-            std::cout << IS_STR_FUNCNAME(func) << ": " << duration_ns << "[ns]" << std::endl;
+            std::cout << __func__ << ": " << duration_ns << "[ns]" << std::endl;
             return result;
         };
     }
