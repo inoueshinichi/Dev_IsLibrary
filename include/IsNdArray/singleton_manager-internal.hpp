@@ -65,7 +65,7 @@ namespace is
             std::mutex& mtx_ = SingletonManager::get_mtx();
 
             // クリティカルセクション作成
-            std::lock_guard<std::recursive_mutex> locker(mtx_);
+            std::lock_guard<std::mutex> locker(mtx_);
 
             static SINGLETON* instance {nullptr}; // 初回だけnullptrで初期化される
             if (instance)

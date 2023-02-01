@@ -7,11 +7,11 @@ namespace is
         SingletonManager* SingletonManager::self_ = nullptr;
 
         // 注意) privateスコープ
-        std::recursive_mutex& SingletonManager::get_rmtx()
+        std::mutex& SingletonManager::get_mtx()
         {
             // 内部リンケージ
-            static std::recursive_mutex rmtx_;
-            return rmtx_;
+            static std::mutex mtx_;
+            return mtx_;
         }
 
         // 注意) privateスコープ
@@ -23,9 +23,6 @@ namespace is
         // 注意) privateスコープ
         SingletonManager& SingletonManager::get_self()
         {
-            std::recursive_mutex& rmtx_ = SingletonManager::get_rmtx();
-            std::lock_guard<std::recursive_mutex> locker(rmtx_);
-
             if (!self_)
             {
                 self_ = new SingletonManager{};
