@@ -14,5 +14,5 @@ if((TARGET GTest::gtest)      AND
 
    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorial_googletest)
    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test_nnabla)
-   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test_imgproc)
+   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test_cv)
 endif()
