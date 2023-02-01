@@ -1,4 +1,4 @@
-#include <IsCommon/math.hpp>
+#include <IsCommon/internal/math.hpp>
 
 namespace is
 {

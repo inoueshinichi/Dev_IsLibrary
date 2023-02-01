@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include <IsCommon/defs.hpp>
+#include <IsCommon/internal/defs.hpp>
 
 #include <string>
 #include <vector>

@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include <IsCommon/IsCommon.hpp>
+#include <IsCommon/internal/defs.hpp>
 
 #include <functional>
 #include <memory>
@@ -46,7 +46,7 @@ namespace is {
              * @return int32
              */
             template <typename SINGLETON>
-            static int32 get_id();
+            static int get_id();
 
             /**
              * @brief 登録済みのすべてのシングルトンインスタンスを削除
@@ -67,17 +67,17 @@ namespace is {
              * 
              * @param id 
              */
-            static void erase_by_id(int32 id);
+            static void erase_by_id(int id);
 
 
         private:
-            int32 count_{0}; // 登録されたシングルトンインスタンスの数
+            int count_{0}; // 登録されたシングルトンインスタンスの数
 
             // IDから[シングルトンinstance, (addressとdeleter関数)]へのHashマップ
             unordered_map<int, pair<uintptr_t, std::function<void()>>> singletons_;
 
             // addressからIDへのHashマップ
-            unordered_map<uintptr_t, int32> address2id_;
+            unordered_map<uintptr_t, int> address2id_;
 
             /**
              * @brief シングルトンインスタンスへのポインタ

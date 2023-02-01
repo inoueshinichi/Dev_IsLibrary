@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#include <IsCommon/defs.hpp>
-#include <IsCommon/exception.hpp>
+#include <IsCommon/internal/defs.hpp>
+#include <IsCommon/internal/exception.hpp>
 
 #if _MSC_VER
 #define _USE_MATH_DEFINES

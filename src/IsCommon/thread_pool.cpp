@@ -1,12 +1,12 @@
 
-#include <IsCommon/thread_pool.hpp>
+#include <IsCommon/internal/thread_pool.hpp>
 
 namespace is {
     namespace common {
 
-        ThreadPool::ThreadPool(int32 workers) {
+        ThreadPool::ThreadPool(int workers) {
             
-            for (int32 i = 0; i < workers; ++i) {
+            for (int i = 0; i < workers; ++i) {
 
                 // スレッド内で処理されるコンテキスト
                 auto done_on_thread = [this]() {

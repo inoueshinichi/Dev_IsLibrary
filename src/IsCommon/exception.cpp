@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include <IsCommon/exception.hpp>
+#include <IsCommon/internal/exception.hpp>
 
 #include <sstream>
 

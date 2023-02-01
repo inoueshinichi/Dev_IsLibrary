@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#include <IsCommon/defs.hpp>
-#include <IsCommon/format_string.hpp>
+#include <IsCommon/internal/defs.hpp>
+#include <IsCommon/internal/format_string.hpp>
 
 
 #include <cstdio>

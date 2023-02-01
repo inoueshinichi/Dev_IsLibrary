@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include <IsCommon/IsCommon.hpp>
+#include <IsCommon/internal/defs.hpp>
 
 #include <condition_variable>
 #include <exception>
@@ -43,7 +43,7 @@ namespace is {
 
         class IS_COMMON_API ThreadPool {
         public:
-            ThreadPool(int32 workers);
+            ThreadPool(int workers);
             virtual ~ThreadPool();
 
             template <typename Func, typename... Args>

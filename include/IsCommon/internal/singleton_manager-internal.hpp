@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include <IsCommon/singleton_manager.hpp>
-#include <IsCommon/rtti.hpp>
+#include <IsCommon/internal/singleton_manager.hpp>
+#include <IsCommon/internal/rtti.hpp>
 
 
 
@@ -43,7 +43,7 @@ namespace is {
                 instance = nullptr;
             };
 
-            int32 id = self_.count_;
+            int id = self_.count_;
             self_.singletons_.insert({id, {(uintptr_t)instance, deleter}}); // Register deleter
             self_.address2id_.insert({(uintptr_t)instance, id});            // Register ID
             self_.count_ += 1;
