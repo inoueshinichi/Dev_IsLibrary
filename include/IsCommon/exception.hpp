@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
+#pragma once
 
 #include <IsCommon/defs.hpp>
 #include <IsCommon/format_string.hpp>
@@ -32,7 +33,7 @@ namespace is {
      */
 #define IS_ERROR(code, msg, ...)                                                  \
     throw Exception(code, format_string(msg, ##__VA_ARGS__),                      \
-                    __func__, __FILE__, __LINE__)
+                    __func__, __FILE__, __LINE__);
 
     /**
      * @brief 特定の条件を満たすかどうかをチェックする.
