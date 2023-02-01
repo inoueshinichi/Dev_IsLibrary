@@ -71,12 +71,10 @@ namespace is {
         SINGLETON *SingletonManager::get() {
             // 内部リンケージのstatic変数は必ずdll側の*.cppで定義すること.
             // https://qiita.com/Chironian/items/3fb61cffa2a20dbee5c2
-            // static std::mutex mtx_;
-            std::recursive_mutex &rmtx_ = SingletonManager::get_rmtx();
+            std::mutex &mtx_ = SingletonManager::get_mtx();
 
             // クリティカルセクション作成
-            // std::lock_guard<std::mutex> locker(mtx_);
-            std::lock_guard<std::recursive_mutex> locker(rmtx_);
+            std::lock_guard<std::mutex> locker(mtx_);
 
             static SINGLETON *instance{nullptr}; // 初回だけnullptrで初期化される
             if (instance) {

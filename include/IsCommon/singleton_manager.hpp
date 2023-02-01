@@ -46,7 +46,7 @@ namespace is {
              * @return int 
              */
             template <typename SINGLETON>
-            int get_id();
+            static int get_id();
 
             /**
              * @brief 登録済みのすべてのシングルトンインスタンスを削除
@@ -60,7 +60,7 @@ namespace is {
              * @tparam SINGLETON 
              */
             template <typename SINGLETON>
-            void erase();
+            static void erase();
 
             /**
              * @brief IDによる登録済みシングルトンインスタンスの削除
@@ -99,7 +99,7 @@ namespace is {
              * @note 追加 Shinichi Inoue 21/2/5
              * @return std::recursive_mutex& 
              */
-            static std::recursive_mutex &get_rmtx();
+            static std::mutex &get_mtx();
 
             // コンストラクタ/デストラクタを非公開
             SingletonManager();
