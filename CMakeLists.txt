@@ -52,11 +52,13 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     # ライブラリフラグ
     set(CMAKE_RELEASE_POSTFIX "")
     set(CMAKE_DEBUG_POSTFIX d)
-    set(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
-    set(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
+    set(CMAKE_MINSIZEREL_POSTFIX s)
+    set(CMAKE_RELWITHDEBINFO_POSTFIX rd)
+
+    # ポリシー
+    # cmake_policy(SET CMP0115 NEW) # explicit source symbol
 
     
-
     # プラットフォーム毎のコンパイラオプション(マルチ・コンフィギュレーションに対応)
     if (MSVC)
         message(STATUS "Compiler: MSVC in Windows")
