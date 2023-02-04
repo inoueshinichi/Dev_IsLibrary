@@ -10,7 +10,9 @@
  */
 #pragma once
 
-// Log
+#include <IsCommon/internal/defs.hpp>
+
+// Log flag
 #if (0)
     #define IS_DEBUG_FLAG 0
 #else
@@ -18,7 +20,7 @@
     #define IS_DEBUG_FLAG 1
 #endif
 
-// debug log
+// Debug log
 #if (IS_DEBUG_FLAG)
     #if __cplusplus <= 201703L // <= C++17
         #define IS_DEBUG_LOG(format, ...) std::printf(format, ##__VA_ARGS__)
@@ -41,3 +43,11 @@
 #else
     #define IS_DEBUG_LOG(format, ...)
 #endif
+
+
+// Class object ckeck
+#define IS_DEBUG_OBJECT_CHECK(class_this_ptr)  \
+    CV_DEBUG_LOG("[%p] %s in %s, %d at %s\n",  \
+        (void *)class_this_ptr, __func__,      \
+        class_this_ptr->GetClassName().c_str(),\
+         __LINE__, __FILE__);
