@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14.6)
 
 
-function(make_test_case SOURCE_CODE TEST_TARGET_EXE)
+function(make_test_case TEST_TARGET_EXE SOURCE_CODE)
     # Exe file
     add_executable(${TEST_TARGET_EXE}
         ${SOURCE_CODE}

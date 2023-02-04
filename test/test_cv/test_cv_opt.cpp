@@ -1,17 +1,12 @@
+// GoogleTest
 #include <gtest/gtest.h>
 
-#include <IsCommon/tm.hpp>
 
-// imgproc
+// Test Target
 #include <IsComputerVision/optical/optical_params.hpp>
 
-#include <string>
-#include <cstdio>
-#include <iostream>
-
-using uchar = unsigned char;
-using namespace is::nbla;
 using namespace is::common;
+using namespace is::nbla;
 using namespace is::cv;
 
 

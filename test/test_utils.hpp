@@ -55,35 +55,35 @@ void show_ndarray_property(NdArrayPtr ndarray)
     {
         std::printf("type=%s\n", dtype_str.c_str());
         std::printf("ndim=%d\n", ndim);
-        std::printf("shape(%ld,)\n", sh[0]);
+        std::printf("shape(%lld,)\n", sh[0]);
         std::printf("strides(%d,)\n", st[0]);
     }
     else if (ndim == 2)
     {
         std::printf("type=%s\n", dtype_str.c_str());
         std::printf("ndim=%d\n", ndim);
-        std::printf("shape(%ld,%ld)\n", sh[0], sh[1]);
+        std::printf("shape(%lld,%lld)\n", sh[0], sh[1]);
         std::printf("strides(%d,%d)\n", st[0], st[1]);
     }
     else if (ndim == 3)
     {
         std::printf("type=%s\n", dtype_str.c_str());
         std::printf("ndim=%d\n", ndim);
-        std::printf("shape(%ld,%ld,%ld)\n", sh[0], sh[1], sh[2]);
+        std::printf("shape(%lld,%lld,%lld)\n", sh[0], sh[1], sh[2]);
         std::printf("strides(%d,%d,%d)\n", st[0], st[1], st[2]);
     }
     else if (ndim == 4)
     {
         std::printf("type=%s\n", dtype_str.c_str());
         std::printf("ndim=%d\n", ndim);
-        std::printf("shape(%ld,%ld,%ld,%ld)\n", sh[0], sh[1], sh[2], sh[3]);
+        std::printf("shape(%lld,%lld,%lld,%lld)\n", sh[0], sh[1], sh[2], sh[3]);
         std::printf("strides(%d,%d,%d,%d)\n", st[0], st[1], st[2], st[3]);
     }
     else if (ndim == 5)
     {
         std::printf("type=%s\n", dtype_str.c_str());
         std::printf("ndim=%d\n", ndim);
-        std::printf("shape(%ld,%ld,%ld,%ld,%ld)\n", sh[0], sh[1], sh[2], sh[3], sh[4]);
+        std::printf("shape(%lld,%lld,%lld,%lld,%lld)\n", sh[0], sh[1], sh[2], sh[3], sh[4]);
         std::printf("strides(%d,%d,%d,%d,%d)\n", st[0], st[1], st[2], st[3], st[4]);
     }
     else
@@ -102,16 +102,23 @@ void show_ndarray_contents(NdArrayPtr ndarray)
     Stride_t strides = ndarray->strides();
     Size_t ndim = ndarray->ndim();
     const T *data = ndarray->cast_data_and_get_pointer<T>(ctx);
-    //auto dtype = get_dtype<T>();
+    auto dtype = get_dtype<T>();
 
     if (ndim == 1)
     {
         std::cout << "[";
         for (int i = 0; i < shape[0]; ++i)
         {
-            std::cout << (T)data[i * strides[0]];
+            if (dtype == dtypes::BYTE || dtype == dtypes::UBYTE)
+            {
+                std::cout << +data[i * strides[0]];
+            }
+            else
+            {
+                std::cout << data[i * strides[0]];
+            }
             if (i != shape[0] - 1)
-                std::cout << " ";
+                    std::cout << " ";
         }
         std::cout << "]" << std::endl;
     }
@@ -123,10 +130,14 @@ void show_ndarray_contents(NdArrayPtr ndarray)
             std::cout << "[";
             for (int j = 0; j < shape[1]; ++j)
             {
-                // T tmp = data[i * strides[0] + j * strides[1]];
-                // std::string elem = format_string("%3f", (float)tmp);
-                std::cout << (T)data[i * strides[0] + j * strides[1]];//tmp;//elem;
-
+                if (dtype == dtypes::BYTE || dtype == dtypes::UBYTE)
+                {
+                    std::cout << +data[i * strides[0] + j * strides[1]];
+                }
+                else
+                {
+                    std::cout << data[i * strides[0] + j * strides[1]];
+                }
                 if (j != shape[1] - 1)
                     std::cout << "  ";
             }
@@ -150,9 +161,14 @@ void show_ndarray_contents(NdArrayPtr ndarray)
                 std::cout << "[";
                 for (int i = 0; i < shape[2]; ++i)
                 {
-                    // T tmp = data[c * strides[0] + j * strides[1] + i * strides[2]];
-                    // std::string elem = format_string("%.2f", (float)tmp);
-                    std::cout << (T)data[c * strides[0] + j * strides[1] + i * strides[2]];//tmp;//elem;
+                    if (dtype == dtypes::BYTE || dtype == dtypes::UBYTE)
+                    {
+                        std::cout << +data[c * strides[0] + j * strides[1] + i * strides[2]];
+                    }
+                    else
+                    {
+                        std::cout << data[c * strides[0] + j * strides[1] + i * strides[2]];
+                    }  
                     if (i != shape[2] - 1)
                         std::cout << " ";
                 }
@@ -190,7 +206,14 @@ void show_ndarray_contents(NdArrayPtr ndarray)
                     std::cout << "[";
                     for (int i = 0; i < shape[3]; ++i)
                     {
-                        std::cout << (T)data[n * strides[0] + c * strides[1] + j * strides[2] + i * strides[3]];
+                        if (dtype == dtypes::BYTE || dtype == dtypes::UBYTE)
+                        {
+                            std::cout << +data[n * strides[0] + c * strides[1] + j * strides[2] + i * strides[3]];
+                        }
+                        else
+                        {
+                            std::cout << data[n * strides[0] + c * strides[1] + j * strides[2] + i * strides[3]];
+                        }
                         if (i != shape[3] - 1)
                             std::cout << " ";
                     }

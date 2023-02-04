@@ -1,24 +1,17 @@
+// GoogleTest
 #include <gtest/gtest.h>
 
 // #include "matplotlibcpp.h"
 // namespace plt = matplotlibcpp;
 
-#include <IsCommon/tm.hpp>
+#include <IsComputerVision/io/image_io.hpp>
 
-// nbla
-#include <IsNdArray/nd_array_extra.hpp>
+// Test Target
+#include <IsComputerVision/filter/utils/padding.hpp>
 
-// imgproc
-#include <IsComputerVision/IsComputerVision.hpp>
-#include <IsComputerVision/io/img_io.hpp>
-
-// utility
+// Test Utility
 #include <test_utils.hpp>
 
-#include <string>
-#include <cstdio>
-
-using uchar = unsigned char;
 using namespace is::nbla;
 using namespace is::common;
 using namespace is::cv;
@@ -35,11 +28,11 @@ namespace
     TEST(cv_func, padding)
     {
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-        std::string dummy_filename = TEST_INPUT_COLOR_DIR "Lenna.bmp";
+        std::string test_filename = TEST_INPUT_COLOR_DIR "Lenna.bmp";
 
         // io
-        ImageIo<format::BmpFile> io_bmp;
-        auto src = io_bmp.load(dummy_filename, false);
+        ImageIo<BmpFile> io_bmp;
+        auto src = io_bmp.load(test_filename, false);
 
         // src
         auto in_shape = src->shape();
@@ -49,12 +42,11 @@ namespace
         // padding
         int pad_x = 5;
         int pad_y = 5;
-        auto pad = padding<uchar>(src, pad_x, pad_x, PADDING_REPLICATE);
+        auto pad = padding<ubyte>(src, pad_x, pad_x, PADDING_REPLICATE);
         show_ndarray_property(pad);
 
-        dummy_filename = format_string(TEST_OUTPUT_DIR "paddingLenna_%dx%d.bmp",
-                                       pad_x, pad_y);
-        io_bmp.save(dummy_filename, pad, false);
+        std::string out_filename = format_string(TEST_OUTPUT_DIR "paddingLenna_%dx%d.bmp", pad_x, pad_y);
+        io_bmp.save(out_filename, pad, false);
     }
 }
 

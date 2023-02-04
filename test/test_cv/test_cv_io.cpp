@@ -1,76 +1,63 @@
+
+// GoogleTest
 #include <gtest/gtest.h>
 
-// IsCommon
-#include <IsCommon/tm.hpp>
+// Test Target
+#include <IsComputerVision/io/image_io.hpp>
 
-// IsCv
-#include <IsComputerVision/io/img_io.hpp>
-
-// nnabla
-#include <IsNdArray/nd_array.hpp>
-#include <IsNdArray/nd_array_extra.hpp>
-
-#include <string>
-#include <cstdio>
-
+// Test Utility
+#include <test_utils.hpp>
 
 // #include "matplotlibcpp.h"
 // namespace plt = matplotlibcpp;
 
-// utility
-#include <test_utils.hpp>
+using namespace is::cv;
+using namespace is::nbla;
+using namespace is::common;
 
 namespace
 {
     TEST(cv_io, bmp)
     {
-        using namespace std;
-        using namespace is::cv;
-        using namespace is::cv::format;
-        using namespace is::nbla;
-        using namespace is::common;
-        using byte = unsigned char;
         const auto &ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
 
-        string dummy_filename = TEST_INPUT_MONO_256_DIR "Tree.bmp";
+        std::string test_filename = TEST_INPUT_MONO_256_DIR "Tree.bmp";
 
         // Bmp
         ImageIo<BmpFile> io_bmp;
-        auto t_ndarray = io_bmp.load(dummy_filename, true);
-        if (!t_ndarray)
-        {
-            std::cerr << "Error loaded ndarray is nullptr" << std::endl;
-        }
+        auto ndarray = io_bmp.load(test_filename, true);
+        
+        auto st = ndarray->strides();
+        auto sh = ndarray->shape();
+        int st_H = st.at(0);
+        int st_W = st.at(1);
+        int st_C = st.at(2);
+        int sh_H = sh.at(0);
+        int sh_W = sh.at(1);
+        int sh_C = sh.at(2);
+        ubyte * data = ndarray->cast_data_and_get_pointer<ubyte>(ctx_cpu);
+        std::printf("Image size(%d, %d, %d)\n", sh_H, sh_W, sh_C);
 
-        auto t_strides = t_ndarray->strides();
-        auto t_shape = t_ndarray->shape();
-        byte * data = t_ndarray->cast_data_and_get_pointer<byte>(ctx_cpu);
-        std::printf("Image size(%ld, %ld, %ld)\n", t_shape[0], t_shape[1], t_shape[2]);
-
-        for (int y = 0; y < t_shape[0]; y++)
+        for (int y = 0; y < sh_H; y++)
         {
-            for (int x = 0; x < t_shape[1]; x++)
+            for (int x = 0; x < sh_W; x++)
             {
-                for (int c = 0; c < t_shape[2]; c++)
+                for (int c = 0; c < sh_C; c++)
                 {
                     if (y == x)
-                        data[y * t_strides[0] + x * t_strides[1] + c * t_strides[2]] = 0;
+                        data[y * st_H + x * st_W + c * st_C] = 0;
                 }
             }
         }
 
         // Matplotlib
-        int height = t_shape[0];
-        int width = t_shape[1];
-        // plt::imshow(data, height, width, 1); // BMPファイルの表示
+        // plt::imshow(data, sh_H, sh_W, 1); // BMPファイルの表示
         // plt::show();
 
-        dummy_filename = TEST_OUTPUT_DIR "Tree_out.bmp";
-        io_bmp.save(dummy_filename, t_ndarray, true);
+        std::string out_filename = TEST_OUTPUT_DIR "Tree_out.bmp";
+        io_bmp.save(out_filename, ndarray, true);
     }
 
-
-    
 }
 
 int main(int, char **)
