@@ -1,44 +1,17 @@
+/**
+ * @file IsComputerVision.hpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-02-04
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once
 
-//////////////////////////////////////////////////////////////////////////////////
-// Std headers
-//////////////////////////////////////////////////////////////////////////////////
-#include <stdexcept>
-#include <exception>
-#include <cassert>
-
-#include <string>
-
-#include <memory>
-#include <cstring>
-#include <functional>
-
-#include <limits>
-#include <numeric>
-
-#include <iostream>
-#include <cstdlib>
-#include <string>
-#include <sstream>
-
-#include <tuple>
-#include <vector>
-#include <deque>
-#include <list>
-#include <set>
-#include <unordered_set>
-#include <map>
-#include <unordered_map>
-#include <stack>
-#include <queue>
-
-#include <future>
-#include <mutex>
-
-#include <algorithm>
-
-#include <chrono>
-
 #include <IsComputerVision/common.hpp>
+#include <IsComputerVision/io/image_io.hpp>
+#include <IsComputerVision/optical/optical_params.hpp>
 
 

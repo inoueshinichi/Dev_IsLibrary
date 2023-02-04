@@ -1,6 +1,7 @@
 
 #include <IsComputerVision/camera/camera_controller.hpp>
-#include <IsComputerVision/camera/usb_camera_frame_reader.hpp>
+
+#include <IsComputerVision/camera/device/usb_camera_frame_reader.hpp>
 
 namespace is 
 {

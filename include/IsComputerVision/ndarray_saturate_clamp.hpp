@@ -10,7 +10,15 @@
  */
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsCommon/IsCommon.hpp>
+
+/*Context*/
+#include <IsNdArray/global_context.hpp>
+#include <IsNdArray/singleton_manager.hpp>
+
+/*NdArray*/
+#include <IsNdArray/nd_array.hpp>
+
 #include <IsComputerVision/saturate_clamp.hpp>
 
 namespace is

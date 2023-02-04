@@ -1,6 +1,6 @@
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/common.hpp>
 
 namespace is 
 {

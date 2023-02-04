@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include <IsComputerVision/common.h>
+
 namespace is
 {
     namespace cv

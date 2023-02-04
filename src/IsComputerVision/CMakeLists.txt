@@ -13,10 +13,12 @@ message(STATUS ">>>>> ${LIB_TARGET_NAME}")
 file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     ./*.cpp
     ./io/*.cpp
+    ./io/format/*.cpp
     ./filter/blur/*.cpp
     ./filter/edge_detector/*.cpp
-#    ./filter/sharpness/*.cpp
+    ./filter/sharpness/*.cpp
     ./camera/*.cpp
+    ./camera/device/*.cpp
 )
 
 

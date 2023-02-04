@@ -7,15 +7,17 @@ namespace is
     {
         NdArrayPtr median_blur(NdArrayPtr src, int ksize)
         {
-            IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
+            IS_DEBUG_NDARRAY_SHAPE_AS_IMAGE(src)
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();
             auto st = src->strides();
-            int channels = sh.at(0);
-            int height = sh.at(1);
-            int width = sh.at(2);
+            int sh_H = sh.at(0);
+            int sh_W = sh.at(1);
+            int sh_C = sh.at(2);
+            int st_H = st.at(0);
+            int st_W = st.at(1);
+            int st_C = st.at(2);
 
             if (ksize % 2 == 0)
                 ksize += 1;
@@ -25,9 +27,14 @@ namespace is
             // パディング
             auto extend = padding<ubyte>(src, hlf_ks, hlf_ks, IS_PADDING_MEAN);
             auto exsh = extend->shape();
+            int exsh_H = exsh[0];
+            int exsh_W = exsh[1];
+            int exsh_C = exsh[2];
             auto exst = extend->strides();
+            int exst_H = exst[0];
+            int exst_W = exst[1];
+            int exst_C = exst[2];
             ubyte *ex_data = extend->cast_data_and_get_pointer<ubyte>(ctx);
-
 
             // 演算結果
             auto dst = zeros<ubyte>(sh);
@@ -51,15 +58,15 @@ namespace is
 
             int mid = (ksize * ksize / 2) + 1; // 1スタート 3x3=9個なら1,2,3,4,5,6,7,8,9の5番
             int xt;
-            for (int c = 0; c < channels; ++c) 
+            for (int c = 0; c < sh_C; ++c) 
             {
-              for (int y = 0; y < height; ++y) 
+              for (int y = 0; y < sh_H; ++y) 
               {
-                for (int x = 0; x < width; ++x) 
+                for (int x = 0; x < sh_W; ++x) 
                 {
 
                     if (y % 2 == 0) xt = x;
-                    else xt = width - 1 - x;
+                    else xt = sh_W - 1 - x;
                     
                     if (xt == 0 && y == 0) 
                     {
@@ -74,7 +81,7 @@ namespace is
                         {
                             for (int i = 0; i < ksize; ++i) 
                             {
-                                const auto& lum = ex_data[c * exst[0] + j * exst[1] + i * exst[2]];
+                                const auto &lum = ex_data[j * exst_H + i * exst_W + c * exst_C];
                                 for (int k = 0; k < HIST_NUM; ++k) 
                                 {
                                     pp_hists[k][lum / p_bins[k]] += 1;
@@ -83,14 +90,14 @@ namespace is
                         }
 
                     }
-                    else if ((xt == 0 && y % 2 == 0) || (xt == width - 1 && y % 2 == 1))
+                    else if ((xt == 0 && y % 2 == 0) || (xt == sh_W - 1 && y % 2 == 1))
                     { // 両端
                         int t = y - 1;
                         int b = t + ksize;
                         for (int i = 0; i < ksize; ++i) 
                         {
-                            const auto& lum_upside = ex_data[c * exst[0] + t * exst[1] + (xt + i) * exst[2]];
-                            const auto& lum_downside = ex_data[c * exst[0] + b * exst[1] + (xt + i) * exst[2]];
+                            const auto &lum_upside = ex_data[t * exst_H + (xt + i) * exst_W + c * exst_C];
+                            const auto &lum_downside = ex_data[b * exst_H + (xt + i) * exst_W + c * exst_C];
 
                             // 各階層のhist
                             for (int k = 0; k < HIST_NUM; ++k) 
@@ -116,8 +123,8 @@ namespace is
 
                         for (int j = 0; j < ksize; ++j) 
                         {
-                            const auto& lum_left = ex_data[c * exst[0] + (y + j) * exst[1] + l * exst[2]];
-                            const auto& lum_right = ex_data[c * exst[0] + (y + j) * exst[1] + r * exst[2]];
+                            const auto &lum_left = ex_data[(y + j) * exst_H + l * exst_W + c * exst_C];
+                            const auto &lum_right = ex_data[(y + j) * exst_H + r * exst_W + c * exst_C];
 
                             // 各階層のhist
                             for (int k = 0; k < HIST_NUM; ++k) 
@@ -161,8 +168,8 @@ namespace is
                         }
                         hierarchy_idx--;
                     }
-                    
-                    dst_data[c * st[0] + y * st[1] + xt * st[2]] = index;
+
+                    dst_data[y * st_H + xt * st_W + c * st_C] = index;
                 }
               }
             }

@@ -10,11 +10,8 @@
  */
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/common.hpp>
 
-//#include <numbers>
-#include <cmath>
-#include <tuple>
 
 /**
  * [OK] 許容錯乱円

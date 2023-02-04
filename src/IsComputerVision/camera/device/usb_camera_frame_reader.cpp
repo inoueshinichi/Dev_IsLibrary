@@ -1,4 +1,4 @@
-#include <IsComputerVision/camera/usb_camera_frame_reader.hpp>
+#include <IsComputerVision/camera/device/usb_camera_frame_reader.hpp>
 
 /* OpenCV Lib Config for Windows */
 #ifdef WIN32

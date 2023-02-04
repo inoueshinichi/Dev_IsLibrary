@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/common.hpp>
 
 namespace is
 {
@@ -48,17 +48,15 @@ namespace is
         template <typename T>
         NdArrayPtr padding(NdArrayPtr src, int ex, int ey, int style)
         {
-            IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();
             auto st = src->strides();
-            int st0 = st.at(0);
-            int st1 = st.at(1);
-            int st2 = st.at(2);
-            const int C = sh.at(0);
-            const int H = sh.at(1);
-            const int W = sh.at(2);
+            int st_H = st.at(0);
+            int st_W = st.at(1);
+            int st_C = st.at(2);
+            const int H = sh.at(0);
+            const int W = sh.at(1);
+            const int C = sh.at(2);
             T *data = src->template cast_data_and_get_pointer<T>(ctx);
 
             int idx_ys = ey;
@@ -66,27 +64,28 @@ namespace is
             int idx_ye = idx_ys + H;
             int idx_xe = idx_xs + W;
 
-            auto ex_src = zeros<T>(Shape_t{C, H + 2 * ey, W + 2 * ex});
+            auto ex_src = zeros<T>(Shape_t{H+2*ey, W+2*ex, C});
             auto ex_st = ex_src->strides();
-            const auto ex_C = ex_st.at(0);
-            const auto ex_H = ex_st.at(1);
-            const auto ex_W = ex_st.at(2);
+            const auto ex_H = ex_st.at(0);
+            const auto ex_W = ex_st.at(1);
+            const auto ex_C = ex_st.at(2);
             T *data_ex = ex_src->template cast_data_and_get_pointer<T>(ctx);
 
             int tx, ty;
-            for (int c = 0; c < C; ++c)
+            for (int y = 0; y < H; ++y)
             {
-                for (int y = 0; y < H; ++y)
+                for (int x = 0; x < W; ++x)
                 {
-                    for (int x = 0; x < W; ++x)
+                    ty = y + ey;
+                    tx = x + ex;
+                    for (int c = 0; c < C; ++c)
                     {
-                        ty = y + ey;
-                        tx = x + ex;
-                        data_ex[c * ex_C + ty * ex_H + tx * ex_W] =
-                            data[c * st0 + y * st1 + x * st2];
+                        data_ex[ty * ex_H + tx * ex_W + c * ex_C] =
+                            data[y * st_H + x * st_W + c * st_C];
                     }
                 }
             }
+            
 
             if (style == IS_PADDING_ZERO)
             {
@@ -107,18 +106,16 @@ namespace is
 
                         for (int x = 0; x < ex; ++x)
                         {
-                            mean_left += data_ex[c * ex_C + y * ex_H + (x + idx_xs) * ex_W];
-                            mean_right += data_ex[c * ex_C + y * ex_H + (idx_xe - 1 - x) * ex_W];
+                            mean_left += data_ex[y * ex_H + (x + idx_xs) * ex_W + c * ex_C];
+                            mean_right += data_ex[y * ex_H + (idx_xe - 1 - x) * ex_W + c * ex_C];
                         }
                         mean_left /= ex;
                         mean_right /= ex;
 
                         for (int x = 0; x < ex; ++x)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] =
-                                saturate_clamp<T>(mean_left);
-                            data_ex[c * ex_C + y * ex_H + (idx_xe + x) * ex_W] =
-                                saturate_clamp<T>(mean_right);
+                            data_ex[y * ex_H + x * ex_W + c * ex_C] = saturate_clamp<T>(mean_left);
+                            data_ex[y * ex_H + (idx_xe + x) * ex_W + c * ex_C] = saturate_clamp<T>(mean_right);
                         }
                     }
 
@@ -130,17 +127,16 @@ namespace is
 
                         for (int y = 0; y < ey; ++y)
                         {
-                            mean_top += data_ex[c * ex_C + (idx_ys + y) * ex_H + x * ex_W];
-                            mean_bottom += data_ex[c * ex_C + (idx_ye - 1 - y) * ex_H + x * ex_W];
+                            mean_top += data_ex[(idx_ys + y) * ex_H + x * ex_W + c * ex_C];
+                            mean_bottom += data_ex[(idx_ye - 1 - y) * ex_H + x * ex_W + c * ex_C];
                         }
                         mean_top /= ey;
                         mean_bottom /= ey;
 
                         for (int y = 0; y < ey; ++y)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] = saturate_clamp<T>(mean_top);
-                            data_ex[c * ex_C + (idx_ye + y) * ex_H + x * ex_W] =
-                                saturate_clamp<T>(mean_bottom);
+                            data_ex[y * ex_H + x * ex_W + c * ex_C] = saturate_clamp<T>(mean_top);
+                            data_ex[(idx_ye + y) * ex_H + x * ex_W + c * ex_C] = saturate_clamp<T>(mean_bottom);
                         }
                     }
 
@@ -151,25 +147,25 @@ namespace is
                     for (int y = 0; y < ey; ++y)
                     {
                         // 左上
-                        mean_tl += data_ex[c * ex_C + y * ex_H + idx_xs * ex_W];
+                        mean_tl += data_ex[y * ex_H + idx_xs * ex_W + c * ex_C];
                         // 右上
-                        mean_tr += data_ex[c * ex_C + y * ex_H + (idx_xe - 1) * ex_W];
+                        mean_tr += data_ex[y * ex_H + (idx_xe - 1) * ex_W + c * ex_C];
                         // 左下
-                        mean_bl += data_ex[c * ex_C + (idx_ye + y) * ex_H + idx_xs * ex_W];
+                        mean_bl += data_ex[(idx_ye + y) * ex_H + idx_xs * ex_W + c * ex_C];
                         // 右下
-                        mean_br += data_ex[c * ex_C + (idx_ye + y) * ex_H + (idx_xe - 1) * ex_W];
+                        mean_br += data_ex[(idx_ye + y) * ex_H + (idx_xe - 1) * ex_W + c * ex_C];
                     }
 
                     for (int x = 0; x < ex; ++x)
                     {
                         // 左上
-                        mean_tl += data_ex[c * ex_C + idx_ys * ex_H + x * ex_W];
+                        mean_tl += data_ex[idx_ys * ex_H + x * ex_W + c * ex_C];
                         // 右上
-                        mean_tr += data_ex[c * ex_C + idx_ys * ex_H + (idx_xe + x) * ex_W];
+                        mean_tr += data_ex[idx_ys * ex_H + (idx_xe + x) * ex_W + c * ex_C];
                         // 左下
-                        mean_bl += data_ex[c * ex_C + (idx_ye - 1) * ex_H + x * ex_W];
+                        mean_bl += data_ex[(idx_ye - 1) * ex_H + x * ex_W + c * ex_C];
                         // 右下
-                        mean_br += data_ex[c * ex_C + (idx_ye - 1) * ex_H + (idx_xe + x) * ex_W];
+                        mean_br += data_ex[(idx_ye - 1) * ex_H + (idx_xe + x) * ex_W + c * ex_C];
                     }
 
                     mean_tl /= (ex + ey);
@@ -181,11 +177,10 @@ namespace is
                     {
                         for (int x = 0; x < ex; ++x)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] = saturate_clamp<T>(mean_tl);
-                            data_ex[c * ex_C + y * ex_H + (x + idx_xe) * ex_W] = saturate_clamp<T>(mean_tr);
-                            data_ex[c * ex_C + (y + idx_ye) * ex_H + x * ex_W] = saturate_clamp<T>(mean_bl);
-                            data_ex[c * ex_C + (y + idx_ye) * ex_H + (x + idx_xe) * ex_W] =
-                                saturate_clamp<T>(mean_br);
+                            data_ex[y * ex_H + x * ex_W + c * ex_C] = saturate_clamp<T>(mean_tl);
+                            data_ex[y * ex_H + (x + idx_xe) * ex_W + c * ex_C] = saturate_clamp<T>(mean_tr);
+                            data_ex[(y + idx_ye) * ex_H + x * ex_W + c * ex_C] = saturate_clamp<T>(mean_bl);
+                            data_ex[(y + idx_ye) * ex_H + (x + idx_xe) * ex_W + c * ex_C] = saturate_clamp<T>(mean_br);
                         }
                     }
                 }
@@ -194,6 +189,7 @@ namespace is
             {
                 // reflect
                 // cba|abcdefg|gfe
+                IS_ERROR(error_code::not_implemented, "No implement padding-reflect.");
             }
             else if (style == IS_PADDING_REPLICATE)
             {
@@ -207,10 +203,10 @@ namespace is
                     {
                         for (int x = 0; x < ex; ++x)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] =
-                                data_ex[c * ex_C + y * ex_H + idx_xs * ex_W];
-                            data_ex[c * ex_C + y * ex_H + (idx_xe + x) * ex_W] =
-                                data_ex[c * ex_C + y * ex_H + (idx_xe - 1) * ex_W];
+                            data_ex[y * ex_H + x * ex_W + c * ex_C] =
+                                data_ex[y * ex_H + idx_xs * ex_W + c * ex_C];
+                            data_ex[y * ex_H + (idx_xe + x) * ex_W + c * ex_C] =
+                                data_ex[y * ex_H + (idx_xe - 1) * ex_W + c * ex_C];
                         }
                     }
 
@@ -219,46 +215,45 @@ namespace is
                     {
                         for (int y = 0; y < ey; ++y)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] =
-                                data_ex[c * ex_C + idx_ys * ex_H + x * ex_W];
-                            data_ex[c * ex_C + (idx_ye + y) * ex_H + x * ex_W] =
-                                data_ex[c * ex_C + (idx_ye - 1) * ex_H + x * ex_W];
+                            data_ex[y * ex_H + x * ex_W + c * ex_C] =
+                                data_ex[idx_ys * ex_H + x * ex_W + c * ex_C];
+                            data_ex[(idx_ye + y) * ex_H + x * ex_W + c * ex_C] =
+                                data_ex[(idx_ye - 1) * ex_H + x * ex_W + c * ex_C];
                         }
                     }
 
                     // 四隅
                     T mean_tl = saturate_clamp<T>(
                         (
-                            data_ex[c * ex_C + (idx_ys - 1) * ex_H + idx_xs * ex_W] +
-                            data_ex[c * ex_C + idx_ys * ex_H + (idx_xs - 1) * ex_W]) /
+                            data_ex[(idx_ys - 1) * ex_H + idx_xs * ex_W + c * ex_C] +
+                            data_ex[idx_ys * ex_H + (idx_xs - 1) * ex_W + c * ex_C]) /
                         2);
 
                     T mean_tr = saturate_clamp<T>(
                         (
-                            data_ex[c * ex_C + (idx_ys - 1) * ex_H + (idx_xe - 1) * ex_W] +
-                            data_ex[c * ex_C + idx_ys * ex_H + idx_xe * ex_W]) /
+                            data_ex[(idx_ys - 1) * ex_H + (idx_xe - 1) * ex_W + c * ex_C] +
+                            data_ex[idx_ys * ex_H + idx_xe * ex_W + c * ex_C]) /
                         2);
 
                     T mean_bl = saturate_clamp<T>(
                         (
-                            data_ex[c * ex_C + (idx_ye - 1) * ex_H + (idx_xs - 1) * ex_W] +
-                            data_ex[c * ex_C + idx_ye * ex_H * idx_xs * ex_W]) /
+                            data_ex[(idx_ye - 1) * ex_H + (idx_xs - 1) * ex_W + c * ex_C] +
+                            data_ex[idx_ye * ex_H * idx_xs * ex_W + c * ex_C]) /
                         2);
                     T mean_br = saturate_clamp<T>(
                         (
-                            data_ex[c * ex_C + (idx_ye - 1) * ex_H + idx_xe * ex_W] +
-                            data_ex[c * ex_C + idx_ye * ex_H + (idx_xe - 1) * ex_W]) /
+                            data_ex[(idx_ye - 1) * ex_H + idx_xe * ex_W + c * ex_C] +
+                            data_ex[idx_ye * ex_H + (idx_xe - 1) * ex_W + c * ex_C]) /
                         2);
 
                     for (int y = 0; y < ey; ++y)
                     {
                         for (int x = 0; x < ex; ++x)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] = mean_tl;
-                            data_ex[c * ex_C + y * ex_H + (x + idx_xe) * ex_W] = mean_tr;
-                            data_ex[c * ex_C + (y + idx_ye) * ex_H + x * ex_W] = mean_bl;
-                            data_ex[c * ex_C + (y + idx_ye) * ex_H + (x + idx_xe) * ex_W] =
-                                mean_br;
+                            data_ex[y * ex_H + x * ex_W + c * ex_C] = mean_tl;
+                            data_ex[y * ex_H + (x + idx_xe) * ex_W + c * ex_C] = mean_tr;
+                            data_ex[(y + idx_ye) * ex_H + x * ex_W + c * ex_C] = mean_bl;
+                            data_ex[(y + idx_ye) * ex_H + (x + idx_xe) * ex_W + c * ex_C] = mean_br;
                         }
                     }
                 }
@@ -267,13 +262,12 @@ namespace is
             {
                 // warp
                 // efg|abcdefg|abc
+                IS_ERROR(error_code::not_implemented, "No implement padding-warp.");
             }
             else
             {
-                std::string msg = is::common::format_string(
-                    "No matching `zero[0]`,`mean[1]`,`reflect[2]`,`replicate[3]` or `warp[4]`. Given is %d",
-                    style);
-                throw std::runtime_error(msg);
+                IS_ERROR(error_code::not_implemented, 
+                    "Must be zero[0], mean[1], reflect[2], replicate[3] or warp[4]. Given is %d", style);
             }
 
             return ex_src;

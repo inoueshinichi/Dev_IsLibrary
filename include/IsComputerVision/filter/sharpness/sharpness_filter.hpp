@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/common.hpp>
 
 namespace is
 {
@@ -19,7 +19,7 @@ namespace is
         using namespace nbla;
 
         /**
-         * @brief Sobel
+         * @brief shapness
          *
          * @param src
          * @param direction

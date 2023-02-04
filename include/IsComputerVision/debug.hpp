@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/common.hpp>
 
 #if (!IS_DEBUG_FLAG)
     #define IS_DEBUG_NDARRAY_STATE(ndarray, type, ndim, shape, strides)
@@ -35,7 +35,7 @@
         }                                                               \
                                                                         \
         oss << "strides (";                                             \
-        for (int32 d = 0; d < ndim; ++d)                                \
+        for (int d = 0; d < ndim; ++d)                                  \
         {                                                               \
             oss << strides[d];                                          \
             if (d != ndim - 1)                                          \
@@ -54,6 +54,11 @@
 
 #define IS_DEBUG_NDARRAY_SHAPE_AS_IMAGE(ndarray)                                       \
     {                                                                                  \
+        if (!ndarray)                                                                  \
+        {                                                                              \
+            IS_ERROR(error_code::value, "%s is nullptr.", #ndarray)                    \
+        }                                                                              \
+        /*(H,W,C)*/                                                                    \
         auto ndim = ndarray->ndim();                                                   \
         auto shape = ndarray->shape();                                                 \
         auto strides = ndarray->strides();                                             \
@@ -62,7 +67,7 @@
         IS_DEBUG_NDARRAY_STATE(ndarray, type, ndim, shape, strides)                    \
         if (ndim != 3)                                                                 \
         {                                                                              \
-            throw IS_ERROR(error_code::value, "%s is not 3 dimension. Given is %d.",   \
+            IS_ERROR(error_code::type, "%s is not 3 dimension. Given is %d.",          \
                            #ndarray, ndim);                                            \
         }                                                                              \
         else                                                                           \
@@ -71,9 +76,9 @@
             int channels = shape[2];                                                   \
             if (channels > 3 || channels == 2)                                         \
             {                                                                          \
-                throw IS_ERROR(error_code::value,                                      \
+                IS_ERROR(error_code::type,                                             \
                                "Channels(shape[2]) of %s must be 1 or 3. Given is %d", \
-                               #ndarray, channels));                                   \
+                               #ndarray, channels);                                    \
             }                                                                          \
         }                                                                              \
     }

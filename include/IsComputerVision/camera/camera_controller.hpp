@@ -1,6 +1,6 @@
 #pragma once
 
-#include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/common.hpp>
 #include <IsComputerVision/camera/camera_frame_reader.hpp>
 
 namespace is 

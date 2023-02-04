@@ -9,20 +9,22 @@ namespace is
 
         NdArrayPtr mozic_blur(NdArrayPtr src, int block) 
         {
-            IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
-    
+            IS_DEBUG_NDARRAY_SHAPE_AS_IMAGE(src)
+            
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();
+            int sh_H = sh.at(0);
+            int sh_W = sh.at(1);
+            int sh_C = sh.at(2);
             auto st = src->strides();
-            int channels = sh.at(0);
-            int height = sh.at(1);
-            int width = sh.at(2);
+            int st_H = st.at(0);
+            int st_W = st.at(1);
+            int st_C = st.at(2);
 
-            int block_num_y = (int)(height / block);
-            int block_num_x = (int)(width / block);
-            int block_mod_y = height % block;
-            int block_mod_x = width % block;
+            int block_num_y = (int)(sh_H / block);
+            int block_num_x = (int)(sh_W / block);
+            int block_mod_y = sh_H % block;
+            int block_mod_x = sh_W % block;
 
             ubyte* src_data = src->cast_data_and_get_pointer<ubyte>(ctx);
 
@@ -32,7 +34,7 @@ namespace is
 
             double mean = 0.0;
 
-            for (int c = 0; c < channels; ++c)
+            for (int c = 0; c < sh_C; ++c)
             {
                 // モザイク計算
                 for (int jy = 0, ys = 0, ye = block; jy < block_num_y; ++jy, ys += block, ye += block) 
@@ -46,7 +48,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                mean += src_data[st[0] * c + st[1] * y + st[2] * x];
+                                mean += src_data[y * st_H + x * st_W + c * st_C];
                             }
                         }
 
@@ -56,7 +58,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
+                                dst_data[y * st_H + x * st_W + c * st_C] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
@@ -72,7 +74,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                mean += src_data[st[0] * c + st[1] * y + st[2] * x];
+                                mean += src_data[y * st_H + x * st_W + c * st_C];
                             }
                         }
 
@@ -82,7 +84,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
+                                dst_data[y * st_H + x * st_W + c * st_C] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
@@ -102,7 +104,7 @@ namespace is
                         {
                             for (int y = ys; y < ye; ++y)
                             {
-                                mean += src_data[st[0] * c + st[1] * y + st[2] * x];
+                                mean += src_data[y * st_H + x * st_W + c * st_C];
                             }
                         }
 
@@ -112,7 +114,7 @@ namespace is
                         {
                             for (int y = ys; y < ye; ++y)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
+                                dst_data[y * st_H + x * st_W + c * st_C] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
@@ -128,7 +130,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                mean += src_data[st[0] * c + st[1] * y + st[2] * x];
+                                mean += src_data[y * st_H + x * st_W + c * st_C];
                             }
                         }
 
@@ -138,7 +140,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
+                                dst_data[y * st_H + x * st_W + c * st_C] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
