@@ -45,9 +45,8 @@
 #endif
 
 
-// Class object ckeck
-#define IS_DEBUG_OBJECT_CHECK(class_this_ptr)  \
-    CV_DEBUG_LOG("[%p] %s in %s, %d at %s\n",  \
-        (void *)class_this_ptr, __func__,      \
-        class_this_ptr->GetClassName().c_str(),\
-         __LINE__, __FILE__);
+// Class object func ckeck
+#define IS_DEBUG_OBJECT_FUNC(class_this_ptr)                            \
+    CV_DEBUG_LOG("[%p] %s: %s at %s, %d:%d\n",                          \
+        (void *)class_this_ptr, class_this_ptr->GetClassName().c_str(), \
+        __func__, __FILE__, __LINE__);
