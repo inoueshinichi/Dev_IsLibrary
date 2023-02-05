@@ -10,8 +10,6 @@
  */
 #pragma once
 
-#include <IsComputerVision/common.hpp>
-
 #if (!IS_DEBUG_FLAG)
     #define IS_DEBUG_NDARRAY_STATE(ndarray, type, ndim, shape, strides)
 #else

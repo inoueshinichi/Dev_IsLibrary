@@ -13,9 +13,8 @@
 
 #include <IsCommon/IsCommon.hpp>
 
-#include <cmath> // std::fmax, std::fmin, std::roundf, std::round etc..
-#include <algorithm> // std::max, std::min
-#include <limits.h>
+#include <limits>
+#include <algorithm>
 
 namespace is
 {
