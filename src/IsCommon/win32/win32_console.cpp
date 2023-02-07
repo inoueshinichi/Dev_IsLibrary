@@ -4,6 +4,7 @@
 
 
 #include <io.h>    // _isatty
+#include <clocale> // wprintf系統で日本語を出力する設定
 
 namespace is {
     namespace common {
@@ -11,7 +12,7 @@ namespace is {
             
             using std::string;
 
-            const int32 Win32Console::WINDOW_TITLE_LENGTH = 2048;
+            const int Win32Console::WINDOW_TITLE_LENGTH = 2048;
 
             Win32Console::Win32Console()
                 : m_hWnd(NULL)
@@ -85,8 +86,8 @@ namespace is {
             }
 
             /* 入力/スクリーンバッファのモードを取得. */
-            int32 Win32Console::get_mode() {
-                int32 iRet = CNSL_OK;
+            int Win32Console::get_mode() {
+                int iRet = CNSL_OK;
                 CString full_msg;
 
                 if (m_hWnd != NULL) {
@@ -121,7 +122,7 @@ namespace is {
             int32 Win32Console::enable_ansi_escape_seqence() {
                 /* コンソールでANSIエスケープを有効にする */
                 CString full_msg;
-                int32 iRet = CNSL_OK;
+                int iRet = CNSL_OK;
 
                 // Windows 10（TH2/1511以降）では条件付きでANSIエスケープシーケンスに対応
                 if (m_hWnd != NULL) {
@@ -143,7 +144,7 @@ namespace is {
                         }
                         else {
                             // 成功
-                            full_msg.Format("[Success] Input: Enable ANSI-Escape Sequence\n");
+                            full_msg.Format(_T("[Success] Input: Enable ANSI-Escape Sequence\n"));
                             ::OutputDebugString(full_msg);
                         }
                     }
@@ -314,6 +315,9 @@ namespace is {
                 m_hOut = (HANDLE)_get_osfhandle(m_fdOut);
                 m_hErr = (HANDLE)_get_osfhandle(m_fdErr);
 
+                // wprintf系統で日本語を出力させる設定
+                setlocale(LC_CTYPE, ""); // システムロケールを使う(≒日本語)
+
                 // コンソールへのシグナルハンドラを設定
                 ::SetConsoleCtrlHandler(&Win32Console::ConsoleSignalHandler, TRUE);
 
@@ -329,10 +333,10 @@ namespace is {
                 ::GetWindowRect(m_hWnd, &cnslWinRect);
 
                 // ウィンドウ位置を変更
-                int32 cnslLeft = ::GetSystemMetrics(SM_CXSCREEN) / 8;
-                int32 cnslTop = ::GetSystemMetrics(SM_CYSCREEN) / 8;
-                int32 cnslWidth = (cnslWinRect.right - cnslWinRect.left);
-                int32 cnslHeight = (cnslWinRect.bottom - cnslWinRect.top);
+                int cnslLeft = ::GetSystemMetrics(SM_CXSCREEN) / 8;
+                int cnslTop = ::GetSystemMetrics(SM_CYSCREEN) / 8;
+                int cnslWidth = (cnslWinRect.right - cnslWinRect.left);
+                int cnslHeight = (cnslWinRect.bottom - cnslWinRect.top);
                 ::MoveWindow(m_hWnd, cnslLeft, cnslTop, cnslWidth, cnslHeight, TRUE);
 
                 return TRUE;
