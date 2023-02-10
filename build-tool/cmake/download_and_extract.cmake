@@ -1,4 +1,7 @@
 # ダウンロードと解凍を行う関数
+
+cmake_minimum_required(VERSION 3.14.6)
+
 function(download_and_extract_library NAME EXT URL)
     if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/third-party/${NAME})
         message(STATUS "Downloading ${NAME}")
