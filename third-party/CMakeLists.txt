@@ -356,7 +356,7 @@ message(STATUS "${OPENCV_DIRNAME}'s lib dir: ${OPENCV_LIBRARY_DIR}")
 link_directories(${OPENCV_LIBRARY_DIR})
 
 # CMakeのターゲットに昇華
-set(INTERNAL_OPENCV_TARGET "internal-${OPENCV_TARGET}")
+set(INTERNAL_OPENCV_TARGET "internal-${OPENCV_TARGET}" CACHE STRING "Internal-OpenCV Target") # キャッシュ変数はどこからでもアクセス可能
 add_library(${INTERNAL_OPENCV_TARGET} SHARED IMPORTED GLOBAL) # 上位層のディレクトリから参照するにはGLOBALオプションが必要
 add_dependencies(${INTERNAL_OPENCV_TARGET} ${OPENCV_TARGET})
 
