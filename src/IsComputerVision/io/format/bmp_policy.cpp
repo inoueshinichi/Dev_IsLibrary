@@ -397,13 +397,11 @@ namespace is
             IS_DEBUG_LOG("Loadint bitmap file...\n");
 
             // Bmpファイルの読み出し
-            auto lambda_fclose = [](FILE *fp)
-            {
-                if (!fp)
-                    return;
-                fclose(fp);
+            auto checked_fclose = [](FILE *fp) -> int {
+                return fp ? fclose(fp) : 0;
             };
-            std::shared_ptr<FILE> fp(fopen(filename.c_str(), "rb"), lambda_fclose);
+
+            std::shared_ptr<FILE> fp(fopen(filename.c_str(), "rb"), checked_fclose);
 
             if (!fp)
             {
