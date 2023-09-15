@@ -9,8 +9,10 @@ Image Processing & Recognition Standard Library
 
 ## 目的
 + PythonのNumpyライクな画像処理・認識をC++で実現する
++ CMakeの実装経験を積む
 + GPU Computing(OpenCL, Cuda, Metal)の実装経験を積む
 + テスト駆動開発の経験を積む
+
 
 ## ロードマップ
 | マイルストン | 内容 | 達成状況 |
