@@ -2,6 +2,9 @@
 
 Image Processing & Recognition Standard Library  
 
+## 参考
++ NNabla https://github.com/sony/nnabla
+
 ## 背景
 + NdArrayベースの画像処理・認識周りのライブラリの需要があると感じている
 + NdArrayベースのC++ライブラリを使って様々なアプリケーションの作成を実現したい
@@ -63,8 +66,3 @@ Image Processing & Recognition Standard Library
 5. GoogleTest 1.12.0
 6. OpenCV 4.x
 7. RapidJson x.x
-
-[Features]  
-1. NdArray
-2. Image Processing
-3. Camera Stream
